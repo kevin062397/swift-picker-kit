@@ -30,25 +30,8 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
             let dragOffset = centerOffset - CGFloat(self.selectedIndex) * self.itemLength + self.dragTranslation
 
             self.itemStack {
-                ForEach(self.values.indices, id: \.self) { index in
-                    let distance = CGFloat(index - self.selectedIndex) + self.dragTranslation / self.itemLength
-                    let itemView = self.label(self.values[index])
-                        .frame(
-                            width: self.orientation == .horizontal ? self.itemLength : proxy.size.width,
-                            height: self.orientation == .vertical ? self.itemLength : proxy.size.height
-                        )
-                    let configItem = PickerScrollWheelStyleConfiguration.Item(
-                        label: AnyView(itemView),
-                        isSelected: index == self.selectedIndex,
-                        distanceFromCenter: distance
-                    )
-                    if let customStyle {
-                        customStyle.makeBody(configuration: PickerScrollWheelStyleConfiguration(items: [configItem]))
-                    } else {
-                        DefaultScrollWheelStyle().makeBody(
-                            configuration: PickerScrollWheelStyleConfiguration(items: [configItem])
-                        )
-                    }
+                ForEach(0..<self.values.count, id: \.self) { index in
+                    self.itemView(index: index, proxy: proxy)
                 }
             }
             .offset(
@@ -78,6 +61,30 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
             )
         }
         .clipped()
+    }
+
+    @ViewBuilder
+    private func itemView(index: Int, proxy: GeometryProxy) -> some View {
+        let distance = CGFloat(index - self.selectedIndex) + self.dragTranslation / self.itemLength
+        let itemContent = self.label(self.values[index])
+            .frame(
+                width: self.orientation == .horizontal ? self.itemLength : proxy.size.width,
+                height: self.orientation == .vertical ? self.itemLength : proxy.size.height
+            )
+        let config = PickerScrollWheelStyleConfiguration(items: [
+            PickerScrollWheelStyleConfiguration.Item(
+                label: AnyView(itemContent),
+                isSelected: index == self.selectedIndex,
+                distanceFromCenter: distance
+            )
+        ])
+        let styled = self.customStyle.map { AnyView($0.makeBody(configuration: config)) } ?? AnyView(DefaultScrollWheelStyle().makeBody(configuration: config))
+        styled
+            .onTapGesture {
+                withAnimation(.interactiveSpring()) {
+                    self.selection = self.values[index]
+                }
+            }
     }
 
     @ViewBuilder
