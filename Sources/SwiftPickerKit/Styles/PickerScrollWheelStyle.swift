@@ -11,7 +11,9 @@ public struct PickerScrollWheelStyleConfiguration {
     public struct Item {
         public let label: AnyView
         public let isSelected: Bool
-        public let distanceFromCenter: Int
+        /// Fractional distance from the centered position. 0 = centered, ±1 = one item away.
+        /// Updates continuously during drag for real-time visual feedback.
+        public let distanceFromCenter: CGFloat
     }
 
     public let items: [Item]

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
     @Environment(\.pickerOrientation) private var orientation
+    @Environment(\.pickerScrollWheelStyle) private var customStyle
 
     @Binding var selection: Value
 
@@ -30,11 +31,24 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
 
             self.itemStack {
                 ForEach(self.values.indices, id: \.self) { index in
-                    self.label(self.values[index])
+                    let distance = CGFloat(index - self.selectedIndex) + self.dragTranslation / self.itemLength
+                    let itemView = self.label(self.values[index])
                         .frame(
                             width: self.orientation == .horizontal ? self.itemLength : proxy.size.width,
                             height: self.orientation == .vertical ? self.itemLength : proxy.size.height
                         )
+                    let configItem = PickerScrollWheelStyleConfiguration.Item(
+                        label: AnyView(itemView),
+                        isSelected: index == self.selectedIndex,
+                        distanceFromCenter: distance
+                    )
+                    if let customStyle {
+                        customStyle.makeBody(configuration: PickerScrollWheelStyleConfiguration(items: [configItem]))
+                    } else {
+                        DefaultScrollWheelStyle().makeBody(
+                            configuration: PickerScrollWheelStyleConfiguration(items: [configItem])
+                        )
+                    }
                 }
             }
             .offset(
