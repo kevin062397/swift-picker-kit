@@ -10,6 +10,7 @@ import SwiftUI
 struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
     @Environment(\.pickerOrientation) private var orientation
     @Environment(\.pickerScrollWheelStyle) private var customStyle
+    @Environment(\.pickerHapticsMode) private var hapticsMode
 
     @Binding var selection: Value
 
@@ -61,6 +62,13 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
             )
         }
         .clipped()
+        .onChange(of: self.selection) { _, _ in
+            #if canImport(UIKit)
+                if case .enabled(let style) = self.hapticsMode {
+                    FeedbackGenerator.impact(style)
+                }
+            #endif
+        }
     }
 
     @ViewBuilder
