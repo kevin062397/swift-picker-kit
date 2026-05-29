@@ -19,4 +19,12 @@ extension View {
     public func pickerHapticsMode(_ hapticsMode: PickerHapticsMode) -> some View {
         self.environment(\.pickerHapticsMode, hapticsMode)
     }
+
+    public func pickerTickMarkRulerStyle<S: PickerTickMarkRulerStyle>(_ style: S) -> some View {
+        self.environment(\.pickerTickMarkRulerStyle, AnyPickerTickMarkRulerStyle(style))
+    }
+
+    public func pickerScrollWheelStyle<S: PickerScrollWheelStyle>(_ style: S) -> some View {
+        self.environment(\.pickerScrollWheelStyle, AnyPickerScrollWheelStyle(style))
+    }
 }
