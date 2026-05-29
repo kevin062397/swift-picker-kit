@@ -5,7 +5,7 @@
 //  Created by Haoyuan Xia on 5/28/26.
 //
 
-public enum PickerOrientation {
+public enum PickerOrientation: Sendable {
     case horizontal
     case vertical
 }

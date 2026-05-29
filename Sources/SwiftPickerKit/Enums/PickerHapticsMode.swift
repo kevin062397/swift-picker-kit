@@ -8,12 +8,12 @@
 #if canImport(UIKit)
     import UIKit
 
-    public enum PickerHapticsMode {
+    public enum PickerHapticsMode: Sendable {
         case enabled(UIImpactFeedbackGenerator.FeedbackStyle = .light)
         case disabled
     }
 #else
-    public enum PickerHapticsMode {
+    public enum PickerHapticsMode: Sendable {
         case disabled
     }
 #endif
