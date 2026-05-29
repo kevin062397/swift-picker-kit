@@ -29,7 +29,7 @@ public struct ItemPicker<Value: Hashable, Label: View>: View {
     public var body: some View {
         switch self.displayStyle {
         case .scrollWheel:
-            Text("ScrollWheel stub")
+            ScrollWheelRenderer(selection: self.$selection, values: self.values, label: self.label)
         case .tickMarkRuler:
             Text("TickMarkRuler stub")
         }
