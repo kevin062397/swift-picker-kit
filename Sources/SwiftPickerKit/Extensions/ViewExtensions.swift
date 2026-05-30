@@ -27,4 +27,8 @@ extension View {
     public func pickerScrollWheelStyle<S: PickerScrollWheelStyle>(_ style: S) -> some View {
         self.environment(\.pickerScrollWheelStyle, AnyPickerScrollWheelStyle(style))
     }
+
+    public func pickerOnEditingChanged(_ action: @escaping (Bool) -> Void) -> some View {
+        self.environment(\.pickerOnEditingChanged, PickerEditingChangedAction(action: action))
+    }
 }

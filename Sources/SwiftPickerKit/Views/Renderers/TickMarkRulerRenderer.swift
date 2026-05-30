@@ -9,6 +9,7 @@ import SwiftUI
 
 struct TickMarkRulerRenderer<Value: Hashable>: View {
     @Environment(\.pickerHapticsMode) private var hapticsMode
+    @Environment(\.pickerOnEditingChanged) private var onEditingChanged
     @Environment(\.pickerOrientation) private var orientation
     @Environment(\.pickerTickMarkRulerStyle) private var customStyle
 
@@ -62,6 +63,7 @@ struct TickMarkRulerRenderer<Value: Hashable>: View {
                         .onChanged { _ in
                             if !self.isDragging {
                                 self.isDragging = true
+                                self.onEditingChanged?(true)
                             }
                         }
                         .onEnded { value in
@@ -75,6 +77,7 @@ struct TickMarkRulerRenderer<Value: Hashable>: View {
                             self.selection = self.values[clamped]
                             self.baseIndex = clamped
                             self.isDragging = false
+                            self.onEditingChanged?(false)
                         }
                 )
         }
