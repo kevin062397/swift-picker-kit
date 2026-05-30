@@ -36,22 +36,30 @@ public struct ItemPicker<Value: Hashable, Label: View>: View {
     }
 }
 
-#Preview("ScrollWheel") {
-    @Previewable @State var selected = 16
-    ItemPicker(selection: $selected, values: [12, 14, 16, 18, 20]) { size in
-        Text("\(size)")
+#Preview("Scroll Wheel") {
+    @Previewable @State var selected = 10
+    let values = Array(0..<100)
+    VStack {
+        Text("\(selected)")
+            .font(.body.monospacedDigit())
+        ItemPicker(selection: $selected, values: values) { value in
+            Text("\(value)")
+        }
+        .pickerDisplayStyle(.scrollWheel)
+        .pickerOrientation(.horizontal)
     }
-    .pickerDisplayStyle(.scrollWheel)
-    .pickerOrientation(.horizontal)
-    .padding()
 }
 
-#Preview("TickMarkRuler") {
-    @Previewable @State var selected = 16
-    ItemPicker(selection: $selected, values: [12, 14, 16, 18, 20]) { size in
-        Text("\(size)")
+#Preview("Tick Mark Ruler") {
+    @Previewable @State var selected = 10
+    let values = Array(0..<100)
+    VStack {
+        Text("\(selected)")
+            .font(.body.monospacedDigit())
+        ItemPicker(selection: $selected, values: values) { value in
+            Text("\(value)")
+        }
+        .pickerDisplayStyle(.tickMarkRuler)
+        .pickerOrientation(.horizontal)
     }
-    .pickerDisplayStyle(.tickMarkRuler)
-    .pickerOrientation(.horizontal)
-    .padding()
 }

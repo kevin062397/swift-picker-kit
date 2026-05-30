@@ -145,8 +145,8 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
     VStack {
         Text("\(selected)")
             .font(.body.monospacedDigit())
-        ScrollWheelRenderer(selection: $selected, values: values, itemLength: 60) { size in
-            Text("\(size)")
+        ScrollWheelRenderer(selection: $selected, values: values, itemLength: 60) { value in
+            Text("\(value)")
         }
         .pickerOrientation(.horizontal)
     }
@@ -158,8 +158,8 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
     HStack {
         Text("\(selected)")
             .font(.body.monospacedDigit())
-        ScrollWheelRenderer(selection: $selected, values: values, itemLength: 60) { size in
-            Text("\(size)")
+        ScrollWheelRenderer(selection: $selected, values: values, itemLength: 60) { value in
+            Text("\(value)")
         }
         .pickerOrientation(.vertical)
     }
