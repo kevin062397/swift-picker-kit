@@ -15,7 +15,7 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
 
     @GestureState private var dragTranslation: CGFloat = 0
 
-    @State private var baseIndex: Int = 0
+    @State private var baseIndex: Int
     @State private var isDragging = false
 
     @Binding var selection: Value
@@ -23,6 +23,14 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
     let values: [Value]
     var itemLength: CGFloat = 60
     let label: (Value) -> Label
+
+    init(selection: Binding<Value>, values: [Value], itemLength: CGFloat = 60, label: @escaping (Value) -> Label) {
+        self._selection = selection
+        self.values = values
+        self.itemLength = itemLength
+        self.label = label
+        self._baseIndex = State(initialValue: values.firstIndex(of: selection.wrappedValue) ?? 0)
+    }
 
     private var selectedIndex: Int {
         return self.values.firstIndex(of: self.selection) ?? 0

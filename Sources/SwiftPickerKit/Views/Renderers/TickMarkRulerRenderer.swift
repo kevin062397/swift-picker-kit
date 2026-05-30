@@ -15,7 +15,7 @@ struct TickMarkRulerRenderer<Value: Hashable>: View {
 
     @GestureState private var dragTranslation: CGFloat = 0
 
-    @State private var baseIndex: Int = 0
+    @State private var baseIndex: Int
     @State private var isDragging = false
 
     @Binding var selection: Value
@@ -24,6 +24,14 @@ struct TickMarkRulerRenderer<Value: Hashable>: View {
     /// Distance between tick centers in points.
     var tickSpacing: CGFloat = 10
     var majorTickEvery: Int = 10
+
+    init(selection: Binding<Value>, values: [Value], tickSpacing: CGFloat = 10, majorTickEvery: Int = 10) {
+        self._selection = selection
+        self.values = values
+        self.tickSpacing = tickSpacing
+        self.majorTickEvery = majorTickEvery
+        self._baseIndex = State(initialValue: values.firstIndex(of: selection.wrappedValue) ?? 0)
+    }
 
     private var selectedIndex: Int {
         return self.values.firstIndex(of: self.selection) ?? 0
