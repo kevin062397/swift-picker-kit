@@ -98,8 +98,8 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
                 self.baseIndex = self.selectedIndex
             }
             #if canImport(UIKit)
-                if case .enabled(let style) = self.hapticsMode {
-                    FeedbackGenerator.impact(style)
+                if self.hapticsMode == .enabled {
+                    FeedbackGenerator.selectionChanged()
                 }
             #endif
         }

@@ -96,6 +96,11 @@ struct FreeRulerRenderer: View {
             if !self.isDragging {
                 self.startValue = newValue
             }
+            #if canImport(UIKit)
+                if self.hapticsMode == .enabled {
+                    FeedbackGenerator.selectionChanged()
+                }
+            #endif
         }
     }
 
