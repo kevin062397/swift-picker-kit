@@ -8,13 +8,16 @@
 import SwiftUI
 
 struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
+    @Environment(\.pickerHapticsMode) private var hapticsMode
     @Environment(\.pickerOrientation) private var orientation
     @Environment(\.pickerScrollWheelStyle) private var customStyle
-    @Environment(\.pickerHapticsMode) private var hapticsMode
-
-    @Binding var selection: Value
 
     @GestureState private var dragTranslation: CGFloat = 0
+
+    @State private var baseIndex: Int = 0
+    @State private var isDragging = false
+
+    @Binding var selection: Value
 
     let values: [Value]
     var itemLength: CGFloat = 60
@@ -28,7 +31,7 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
         GeometryReader { proxy in
             let viewSize = self.orientation == .horizontal ? proxy.size.width : proxy.size.height
             let centerOffset = viewSize / 2 - self.itemLength / 2
-            let dragOffset = centerOffset - CGFloat(self.selectedIndex) * self.itemLength + self.dragTranslation
+            let dragOffset = centerOffset - CGFloat(self.baseIndex) * self.itemLength + self.dragTranslation
 
             self.itemStack {
                 ForEach(0..<self.values.count, id: \.self) { index in
@@ -48,6 +51,18 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
                             self.orientation == .horizontal
                             ? value.translation.width
                             : value.translation.height
+                        // Update selection in real-time during drag
+                        let offset = state / self.itemLength
+                        let newIndex = (CGFloat(self.baseIndex) - offset).rounded()
+                        let clamped = Int(min(max(newIndex, 0), CGFloat(self.values.count - 1)))
+                        if self.values[clamped] != self.selection {
+                            self.selection = self.values[clamped]
+                        }
+                    }
+                    .onChanged { _ in
+                        if !self.isDragging {
+                            self.isDragging = true
+                        }
                     }
                     .onEnded { value in
                         let translation =
@@ -55,14 +70,22 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
                             ? value.translation.width
                             : value.translation.height
                         let offset = translation / self.itemLength
-                        let newIndex = (CGFloat(self.selectedIndex) - offset).rounded()
+                        let newIndex = (CGFloat(self.baseIndex) - offset).rounded()
                         let clamped = Int(min(max(newIndex, 0), CGFloat(self.values.count - 1)))
                         self.selection = self.values[clamped]
+                        self.baseIndex = clamped
+                        self.isDragging = false
                     }
             )
         }
         .clipped()
+        .onAppear {
+            self.baseIndex = self.selectedIndex
+        }
         .onChange(of: self.selection) { _, _ in
+            if !self.isDragging {
+                self.baseIndex = self.selectedIndex
+            }
             #if canImport(UIKit)
                 if case .enabled(let style) = self.hapticsMode {
                     FeedbackGenerator.impact(style)
@@ -73,7 +96,7 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
 
     @ViewBuilder
     private func itemView(index: Int, proxy: GeometryProxy) -> some View {
-        let distance = CGFloat(index - self.selectedIndex) + self.dragTranslation / self.itemLength
+        let distance = CGFloat(index - self.baseIndex) + self.dragTranslation / self.itemLength
         let itemContent = self.label(self.values[index])
             .frame(
                 width: self.orientation == .horizontal ? self.itemLength : proxy.size.width,
@@ -105,22 +128,28 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
     }
 }
 
-// MARK: - Previews
-
 #Preview("Horizontal") {
-    @Previewable @State var selected = 16
-    ScrollWheelRenderer(selection: $selected, values: [12, 14, 16, 18, 20], itemLength: 60) { size in
-        Text("\(size)")
+    @Previewable @State var selected = 10
+    let values = Array(0..<100)
+    VStack {
+        Text("\(selected)")
+            .font(.body.monospacedDigit())
+        ScrollWheelRenderer(selection: $selected, values: values, itemLength: 60) { size in
+            Text("\(size)")
+        }
+        .pickerOrientation(.horizontal)
     }
-    .pickerOrientation(.horizontal)
-    .padding()
 }
 
 #Preview("Vertical") {
-    @Previewable @State var selected = 16
-    ScrollWheelRenderer(selection: $selected, values: [12, 14, 16, 18, 20], itemLength: 60) { size in
-        Text("\(size)")
+    @Previewable @State var selected = 10
+    let values = Array(0..<100)
+    HStack {
+        Text("\(selected)")
+            .font(.body.monospacedDigit())
+        ScrollWheelRenderer(selection: $selected, values: values, itemLength: 60) { size in
+            Text("\(size)")
+        }
+        .pickerOrientation(.vertical)
     }
-    .pickerOrientation(.vertical)
-    .padding()
 }
