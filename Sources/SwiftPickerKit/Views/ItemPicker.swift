@@ -31,12 +31,10 @@ public struct ItemPicker<Value: Hashable, Label: View>: View {
         case .scrollWheel:
             ScrollWheelRenderer(selection: self.$selection, values: self.values, label: self.label)
         case .tickMarkRuler:
-            Text("TickMarkRuler stub")
+            TickMarkRulerRenderer(selection: self.$selection, values: self.values)
         }
     }
 }
-
-// MARK: - Previews
 
 #Preview("ScrollWheel") {
     @Previewable @State var selected = 16
