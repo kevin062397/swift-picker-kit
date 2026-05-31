@@ -9,9 +9,7 @@
     import UIKit
 
     enum FeedbackGenerator {
-        // MARK: - Public Functions
-
-        static func impactOccurred(_ feedbackStyle: UIImpactFeedbackGenerator.FeedbackStyle, intensity: CGFloat? = nil, at location: CGPoint? = nil) {
+        @MainActor static func impactOccurred(_ feedbackStyle: UIImpactFeedbackGenerator.FeedbackStyle, intensity: CGFloat? = nil, at location: CGPoint? = nil) {
             let generator = UIImpactFeedbackGenerator(style: feedbackStyle)
             generator.prepare()
             if let intensity = intensity, let location = location {
@@ -33,7 +31,7 @@
             }
         }
 
-        static func notificationOccurred(_ feedbackType: UINotificationFeedbackGenerator.FeedbackType, at location: CGPoint? = nil) {
+        @MainActor static func notificationOccurred(_ feedbackType: UINotificationFeedbackGenerator.FeedbackType, at location: CGPoint? = nil) {
             let generator = UINotificationFeedbackGenerator()
             generator.prepare()
             if let location = location {
@@ -47,7 +45,7 @@
             }
         }
 
-        static func selectionChanged(at location: CGPoint? = nil) {
+        @MainActor static func selectionChanged(at location: CGPoint? = nil) {
             let generator = UISelectionFeedbackGenerator()
             generator.prepare()
             if let location = location {
