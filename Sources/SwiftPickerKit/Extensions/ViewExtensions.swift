@@ -35,4 +35,8 @@ extension View {
     public func pickerRulerTickAlignment(_ alignment: PickerRulerTickAlignment) -> some View {
         self.environment(\.pickerRulerTickAlignment, alignment)
     }
+
+    public func pickerRulerLabels<Label: View>(placement: PickerRulerLabelPlacement = .after, @ViewBuilder label: @escaping (Int) -> Label) -> some View {
+        self.environment(\.pickerRulerLabelPlacement, placement).environment(\.pickerRulerLabelContent, PickerRulerLabelContent(makeLabel: { AnyView(label($0)) }))
+    }
 }

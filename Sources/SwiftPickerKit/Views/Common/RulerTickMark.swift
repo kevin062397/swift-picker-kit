@@ -21,31 +21,19 @@ struct RulerTickMark: View {
         let color: Color = self.isMajor ? Color.primary.opacity(0.5) : Color.primary.opacity(0.25)
 
         if self.orientation == .horizontal {
-            VStack(spacing: 0) {
-                if self.alignment == .trailing {
-                    Spacer(minLength: 0)
-                }
+            ZStack(alignment: self.alignment == .trailing ? .bottom : (self.alignment == .leading ? .top : .center)) {
+                Color.clear.frame(width: 1, height: self.crossAxisSize)
                 Rectangle()
                     .fill(color)
                     .frame(width: 1, height: tickLength)
-                if self.alignment == .leading {
-                    Spacer(minLength: 0)
-                }
             }
-            .frame(width: 1, height: self.crossAxisSize)
         } else {
-            HStack(spacing: 0) {
-                if self.alignment == .trailing {
-                    Spacer(minLength: 0)
-                }
+            ZStack(alignment: self.alignment == .trailing ? .trailing : (self.alignment == .leading ? .leading : .center)) {
+                Color.clear.frame(width: self.crossAxisSize, height: 1)
                 Rectangle()
                     .fill(color)
                     .frame(width: tickLength, height: 1)
-                if self.alignment == .leading {
-                    Spacer(minLength: 0)
-                }
             }
-            .frame(width: self.crossAxisSize, height: 1)
         }
     }
 }

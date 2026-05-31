@@ -1,0 +1,56 @@
+//
+//  RulerLabelStack.swift
+//  SwiftPickerKit
+//
+//  Created by Haoyuan Xia on 5/30/26.
+//
+
+import SwiftUI
+
+struct RulerLabelStack: View {
+    @Environment(\.pickerOrientation) private var orientation
+    @Environment(\.pickerRulerLabelPlacement) private var labelPlacement
+
+    let crossAxisSize: CGFloat
+    let tickCount: Int
+    let tickSpacing: CGFloat
+    let majorTickEvery: Int
+    let labelContent: PickerRulerLabelContent
+
+    var body: some View {
+        let gap: CGFloat = 5
+        let crossOffset: CGFloat = self.labelPlacement == .after ? self.crossAxisSize + gap : -(self.crossAxisSize + gap)
+
+        if self.orientation == .horizontal {
+            HStack(spacing: self.tickSpacing - 1) {
+                ForEach(0..<self.tickCount, id: \.self) { index in
+                    Color.clear
+                        .frame(width: 1, height: self.crossAxisSize)
+                        .overlay(alignment: self.labelPlacement == .after ? .top : .bottom) {
+                            if index % self.majorTickEvery == 0 {
+                                self.labelContent.makeLabel(index)
+                                    .fixedSize()
+                                    .offset(y: crossOffset)
+                            }
+                        }
+                }
+            }
+            .allowsHitTesting(false)
+        } else {
+            VStack(spacing: self.tickSpacing - 1) {
+                ForEach(0..<self.tickCount, id: \.self) { index in
+                    Color.clear
+                        .frame(width: self.crossAxisSize, height: 1)
+                        .overlay(alignment: self.labelPlacement == .after ? .leading : .trailing) {
+                            if index % self.majorTickEvery == 0 {
+                                self.labelContent.makeLabel(index)
+                                    .fixedSize()
+                                    .offset(x: crossOffset)
+                            }
+                        }
+                }
+            }
+            .allowsHitTesting(false)
+        }
+    }
+}

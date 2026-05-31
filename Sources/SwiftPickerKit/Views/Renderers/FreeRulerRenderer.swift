@@ -10,10 +10,12 @@ import SwiftUI
 /// A ruler renderer for step-less continuous ranges.
 /// Drag moves the ruler freely with no snapping — value updates proportionally to position.
 struct FreeRulerRenderer: View {
-    @Environment(\.pickerOrientation) private var orientation
-    @Environment(\.pickerTickMarkRulerStyle) private var customStyle
     @Environment(\.pickerHapticsMode) private var hapticsMode
     @Environment(\.pickerOnEditingChanged) private var onEditingChanged
+    @Environment(\.pickerOrientation) private var orientation
+    @Environment(\.pickerRulerLabelContent) private var labelContent
+    @Environment(\.pickerRulerLabelPlacement) private var labelPlacement
+    @Environment(\.pickerTickMarkRulerStyle) private var customStyle
 
     @Binding var value: Double
     let range: ClosedRange<Double>
@@ -53,12 +55,30 @@ struct FreeRulerRenderer: View {
             // This avoids a feedback loop where value changes also shift the strip
             let baseOffset = self.offset(for: self.startValue)
             let dragOffset = centerOffset - baseOffset + self.dragTranslation
+            let crossAxisSize = self.orientation == .horizontal ? proxy.size.height : proxy.size.width
 
             self.tickScale(proxy: proxy)
                 .offset(
                     x: self.orientation == .horizontal ? dragOffset : 0,
                     y: self.orientation == .vertical ? dragOffset : 0
                 )
+                .frame(width: proxy.size.width, height: proxy.size.height, alignment: .topLeading)
+                .clipped()
+                .overlay(alignment: .topLeading) {
+                    if let labelContent = self.labelContent, self.labelPlacement != .none {
+                        RulerLabelStack(
+                            crossAxisSize: crossAxisSize,
+                            tickCount: self.tickCount,
+                            tickSpacing: self.tickSpacing,
+                            majorTickEvery: self.majorTickEvery,
+                            labelContent: labelContent
+                        )
+                        .offset(
+                            x: self.orientation == .horizontal ? dragOffset : 0,
+                            y: self.orientation == .vertical ? dragOffset : 0
+                        )
+                    }
+                }
                 .animation(nil, value: self.dragTranslation)
                 .animation(.interactiveSpring(), value: self.startValue)
                 .gesture(
@@ -90,13 +110,12 @@ struct FreeRulerRenderer: View {
                         }
                 )
         }
-        .clipped()
-        .overlay(
+        .overlay {
             GeometryReader { proxy in
                 let crossAxisSize = self.orientation == .horizontal ? proxy.size.height : proxy.size.width
                 RulerCenterIndicator(crossAxisSize: crossAxisSize, orientation: self.orientation)
             }
-        )
+        }
         .onChange(of: self.value) { _, newValue in
             if !self.isDragging {
                 self.startValue = newValue

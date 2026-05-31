@@ -11,6 +11,8 @@ struct TickMarkRulerRenderer<Value: Hashable>: View {
     @Environment(\.pickerHapticsMode) private var hapticsMode
     @Environment(\.pickerOnEditingChanged) private var onEditingChanged
     @Environment(\.pickerOrientation) private var orientation
+    @Environment(\.pickerRulerLabelContent) private var labelContent
+    @Environment(\.pickerRulerLabelPlacement) private var labelPlacement
     @Environment(\.pickerTickMarkRulerStyle) private var customStyle
 
     @GestureState private var dragTranslation: CGFloat = 0
@@ -46,12 +48,30 @@ struct TickMarkRulerRenderer<Value: Hashable>: View {
             let viewSize = self.orientation == .horizontal ? proxy.size.width : proxy.size.height
             let centerOffset = viewSize / 2
             let dragOffset = centerOffset - CGFloat(self.baseIndex) * self.tickSpacing + self.dragTranslation
+            let crossAxisSize = self.orientation == .horizontal ? proxy.size.height : proxy.size.width
 
             self.tickContent(proxy: proxy)
                 .offset(
                     x: self.orientation == .horizontal ? dragOffset : 0,
                     y: self.orientation == .vertical ? dragOffset : 0
                 )
+                .frame(width: proxy.size.width, height: proxy.size.height, alignment: .topLeading)
+                .clipped()
+                .overlay(alignment: .topLeading) {
+                    if let labelContent = self.labelContent, self.labelPlacement != .none {
+                        RulerLabelStack(
+                            crossAxisSize: crossAxisSize,
+                            tickCount: self.tickCount,
+                            tickSpacing: self.tickSpacing,
+                            majorTickEvery: self.majorTickEvery,
+                            labelContent: labelContent
+                        )
+                        .offset(
+                            x: self.orientation == .horizontal ? dragOffset : 0,
+                            y: self.orientation == .vertical ? dragOffset : 0
+                        )
+                    }
+                }
                 .animation(.interactiveSpring(), value: self.selectedIndex)
                 .animation(.interactiveSpring(), value: self.dragTranslation)
                 .gesture(
@@ -89,13 +109,12 @@ struct TickMarkRulerRenderer<Value: Hashable>: View {
                         }
                 )
         }
-        .clipped()
-        .overlay(
+        .overlay {
             GeometryReader { proxy in
                 let crossAxisSize = self.orientation == .horizontal ? proxy.size.height : proxy.size.width
                 RulerCenterIndicator(crossAxisSize: crossAxisSize, orientation: self.orientation)
             }
-        )
+        }
         .onAppear {
             self.baseIndex = self.selectedIndex
         }
