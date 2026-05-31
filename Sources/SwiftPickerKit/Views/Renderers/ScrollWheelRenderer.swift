@@ -11,6 +11,9 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
     @Environment(\.pickerHapticsMode) private var hapticsMode
     @Environment(\.pickerOnEditingChanged) private var onEditingChanged
     @Environment(\.pickerOrientation) private var orientation
+    @Environment(\.pickerRulerFadeMinOpacity) private var fadeMinOpacity
+    @Environment(\.pickerRulerFadePlateau) private var fadePlateau
+    @Environment(\.pickerRulerFadeStrength) private var fadeStrength
     @Environment(\.pickerScrollWheelStyle) private var customStyle
 
     @GestureState private var dragTranslation: CGFloat = 0
@@ -36,6 +39,21 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
         return self.values.firstIndex(of: self.selection) ?? 0
     }
 
+    private func itemOpacity(index: Int, dragOffset: CGFloat, viewSize: CGFloat) -> Double {
+        guard self.fadeStrength > 0 else { return 1 }
+        let center = viewSize / 2
+        let halfView = center
+        let plateau = self.fadePlateau.clamped(0, 1) * halfView
+        // Item center in screen coordinates
+        let itemCenter = dragOffset + CGFloat(index) * self.itemLength + self.itemLength / 2
+        let distance = abs(itemCenter - center)
+        guard distance > plateau else { return 1 }
+        let fadeDistance = halfView - plateau
+        guard fadeDistance > 0 else { return 1 }
+        let normalizedDistance = (distance - plateau) / fadeDistance
+        return max(self.fadeMinOpacity.clamped(0, 1), 1 - Double(normalizedDistance * self.fadeStrength))
+    }
+
     var body: some View {
         GeometryReader { proxy in
             let viewSize = self.orientation == .horizontal ? proxy.size.width : proxy.size.height
@@ -44,7 +62,7 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
 
             self.itemStack {
                 ForEach(0..<self.values.count, id: \.self) { index in
-                    self.itemView(index: index, proxy: proxy)
+                    self.itemView(index: index, proxy: proxy, dragOffset: dragOffset, viewSize: viewSize)
                 }
             }
             .offset(
@@ -106,8 +124,9 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
     }
 
     @ViewBuilder
-    private func itemView(index: Int, proxy: GeometryProxy) -> some View {
+    private func itemView(index: Int, proxy: GeometryProxy, dragOffset: CGFloat, viewSize: CGFloat) -> some View {
         let distance = CGFloat(index - self.baseIndex) + self.dragTranslation / self.itemLength
+        let opacity = self.itemOpacity(index: index, dragOffset: dragOffset, viewSize: viewSize)
         let itemContent = self.label(self.values[index])
             .frame(
                 width: self.orientation == .horizontal ? self.itemLength : proxy.size.width,
@@ -122,6 +141,7 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
         ])
         let styled = self.customStyle.map { AnyView($0.makeBody(configuration: config)) } ?? AnyView(DefaultScrollWheelStyle().makeBody(configuration: config))
         styled
+            .opacity(opacity)
             .onTapGesture {
                 withAnimation(.interactiveSpring()) {
                     self.baseIndex = index
