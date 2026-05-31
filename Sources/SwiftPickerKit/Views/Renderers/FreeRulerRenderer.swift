@@ -13,6 +13,9 @@ struct FreeRulerRenderer: View {
     @Environment(\.pickerHapticsMode) private var hapticsMode
     @Environment(\.pickerOnEditingChanged) private var onEditingChanged
     @Environment(\.pickerOrientation) private var orientation
+    @Environment(\.pickerRulerFadeMinOpacity) private var fadeMinOpacity
+    @Environment(\.pickerRulerFadePlateau) private var fadePlateau
+    @Environment(\.pickerRulerFadeStrength) private var fadeStrength
     @Environment(\.pickerRulerLabelContent) private var labelContent
     @Environment(\.pickerRulerLabelPlacement) private var labelPlacement
     @Environment(\.pickerTickMarkRulerStyle) private var customStyle
@@ -57,7 +60,9 @@ struct FreeRulerRenderer: View {
             let dragOffset = centerOffset - baseOffset + self.dragTranslation
             let crossAxisSize = self.orientation == .horizontal ? proxy.size.height : proxy.size.width
 
-            self.tickScale(proxy: proxy)
+            let opacities = self.tickOpacities(dragOffset: dragOffset, viewSize: viewSize)
+
+            self.tickScale(proxy: proxy, opacities: opacities)
                 .offset(
                     x: self.orientation == .horizontal ? dragOffset : 0,
                     y: self.orientation == .vertical ? dragOffset : 0
@@ -71,7 +76,8 @@ struct FreeRulerRenderer: View {
                             tickCount: self.tickCount,
                             tickSpacing: self.tickSpacing,
                             majorTickEvery: self.majorTickEvery,
-                            labelContent: labelContent
+                            labelContent: labelContent,
+                            opacities: opacities
                         )
                         .offset(
                             x: self.orientation == .horizontal ? dragOffset : 0,
@@ -128,19 +134,48 @@ struct FreeRulerRenderer: View {
         }
     }
 
+    private func tickOpacities(dragOffset: CGFloat, viewSize: CGFloat) -> [Double] {
+        guard self.fadeStrength > 0 else {
+            return Array(repeating: 1, count: self.tickCount)
+        }
+        let center = viewSize / 2
+        let halfView = center
+        let plateau = self.fadePlateau.clamped(0, 1) * halfView
+        let minOpacity = self.fadeMinOpacity.clamped(0, 1)
+        return (0..<self.tickCount).map { index in
+            let tickCenter = dragOffset + CGFloat(index) * self.tickSpacing
+            let distance = abs(tickCenter - center)
+            guard distance > plateau else { return 1 }
+            let fadeDistance = halfView - plateau
+            guard fadeDistance > 0 else { return 1 }
+            let normalizedDistance = (distance - plateau) / fadeDistance
+            return max(minOpacity, 1 - Double(normalizedDistance * self.fadeStrength))
+        }
+    }
+
     @ViewBuilder
-    private func tickScale(proxy: GeometryProxy) -> some View {
+    private func tickScale(proxy: GeometryProxy, opacities: [Double]) -> some View {
         let crossAxisSize = self.orientation == .horizontal ? proxy.size.height : proxy.size.width
         if self.orientation == .horizontal {
             HStack(spacing: self.tickSpacing - 1) {
                 ForEach(0..<self.tickCount, id: \.self) { index in
-                    RulerTickMark(isMajor: index % self.majorTickEvery == 0, crossAxisSize: crossAxisSize, orientation: self.orientation)
+                    RulerTickMark(
+                        isMajor: index % self.majorTickEvery == 0,
+                        crossAxisSize: crossAxisSize,
+                        orientation: self.orientation,
+                        opacity: opacities.indices.contains(index) ? opacities[index] : 1
+                    )
                 }
             }
         } else {
             VStack(spacing: self.tickSpacing - 1) {
                 ForEach(0..<self.tickCount, id: \.self) { index in
-                    RulerTickMark(isMajor: index % self.majorTickEvery == 0, crossAxisSize: crossAxisSize, orientation: self.orientation)
+                    RulerTickMark(
+                        isMajor: index % self.majorTickEvery == 0,
+                        crossAxisSize: crossAxisSize,
+                        orientation: self.orientation,
+                        opacity: opacities.indices.contains(index) ? opacities[index] : 1
+                    )
                 }
             }
         }
@@ -173,6 +208,8 @@ struct FreeRulerRenderer: View {
             .pickerOrientation(.horizontal)
             .pickerRulerLabels(placement: .after) { index in
                 Text(String(format: "%.1f", Double(index) / 10))
+                    .font(.caption.bold().monospacedDigit())
+                    .foregroundStyle(.secondary)
             }
             .frame(height: 30)
     }
@@ -198,6 +235,8 @@ struct FreeRulerRenderer: View {
             .pickerOrientation(.vertical)
             .pickerRulerLabels(placement: .after) { index in
                 Text(String(format: "%.1f", Double(index) / 10))
+                    .font(.caption.bold().monospacedDigit())
+                    .foregroundStyle(.secondary)
             }
             .frame(width: 30)
     }

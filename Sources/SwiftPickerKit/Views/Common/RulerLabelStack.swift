@@ -16,6 +16,7 @@ struct RulerLabelStack: View {
     let tickSpacing: CGFloat
     let majorTickEvery: Int
     let labelContent: PickerRulerLabelContent
+    var opacities: [Double] = []
 
     var body: some View {
         let gap: CGFloat = 5
@@ -31,6 +32,7 @@ struct RulerLabelStack: View {
                                 self.labelContent.makeLabel(index)
                                     .fixedSize()
                                     .offset(y: crossOffset)
+                                    .opacity(self.opacities.indices.contains(index) ? self.opacities[index] : 1)
                             }
                         }
                 }

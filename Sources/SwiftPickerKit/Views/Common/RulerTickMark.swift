@@ -13,12 +13,13 @@ struct RulerTickMark: View {
     let isMajor: Bool
     let crossAxisSize: CGFloat
     let orientation: PickerOrientation
+    var opacity: Double = 1
 
     var body: some View {
         let majorLength: CGFloat = self.crossAxisSize
         let minorLength: CGFloat = self.crossAxisSize * 2 / 3
         let tickLength = self.isMajor ? majorLength : minorLength
-        let color: Color = self.isMajor ? Color.primary.opacity(0.5) : Color.primary.opacity(0.25)
+        let color: Color = self.isMajor ? Color.primary.opacity(0.5 * self.opacity) : Color.primary.opacity(0.25 * self.opacity)
 
         if self.orientation == .horizontal {
             ZStack(alignment: self.alignment == .trailing ? .bottom : (self.alignment == .leading ? .top : .center)) {

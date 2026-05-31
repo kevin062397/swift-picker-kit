@@ -39,4 +39,16 @@ extension View {
     public func pickerRulerLabels<Label: View>(placement: PickerRulerLabelPlacement = .after, @ViewBuilder label: @escaping (Int) -> Label) -> some View {
         self.environment(\.pickerRulerLabelPlacement, placement).environment(\.pickerRulerLabelContent, PickerRulerLabelContent(makeLabel: { AnyView(label($0)) }))
     }
+    
+    public func pickerRulerFadeMinOpacity(_ opacity: Double) -> some View {
+        self.environment(\.pickerRulerFadeMinOpacity, opacity)
+    }
+    
+    public func pickerRulerFadePlateau(_ plateau: CGFloat) -> some View {
+        self.environment(\.pickerRulerFadePlateau, plateau)
+    }
+
+    public func pickerRulerFadeStrength(_ strength: CGFloat) -> some View {
+        self.environment(\.pickerRulerFadeStrength, strength)
+    }
 }
