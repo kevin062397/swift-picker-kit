@@ -7,6 +7,21 @@
 
 import SwiftUI
 
+/// A picker that selects one value from a finite ordered or unordered collection.
+///
+/// Use `ItemPicker` for nominal values (e.g. map styles) and discrete stepped values
+/// (e.g. font sizes, playback speeds). For continuous numeric ranges, use ``ContinuousPicker``.
+///
+/// ```swift
+/// @State private var selectedSize = 16
+/// let sizes = [8, 10, 12, 14, 16, 18, 20, 24]
+///
+/// ItemPicker(selection: $selectedSize, values: sizes) { size in
+///     Text("\(size)")
+/// }
+/// .pickerDisplayStyle(.scrollWheel)
+/// .pickerOrientation(.horizontal)
+/// ```
 public struct ItemPicker<Value: Hashable, Label: View>: View {
     @Environment(\.pickerDisplayStyle) private var displayStyle
     @Environment(\.pickerOrientation) private var orientation
@@ -16,6 +31,10 @@ public struct ItemPicker<Value: Hashable, Label: View>: View {
     private let values: [Value]
     private let label: (Value) -> Label
 
+    /// Creates an item picker.
+    /// - Parameter selection: A binding to the currently selected value.
+    /// - Parameter values: The ordered collection of values to pick from.
+    /// - Parameter label: A view builder that produces a label for each value.
     public init(
         selection: Binding<Value>,
         values: [Value],

@@ -7,12 +7,29 @@
 
 import SwiftUI
 
+/// A picker that selects a `Double` value within a continuous range.
+///
+/// When a `step` is provided, the picker snaps to discrete tick marks spaced by
+/// that step value. Without a step, the ruler scrolls freely and the value updates
+/// proportionally to position with no snapping.
+///
+/// ```swift
+/// // Stepped — snaps to 0.0, 0.05, 0.10, …, 1.0
+/// ContinuousPicker(value: $volume, in: 0.0...1.0, step: 0.05)
+///
+/// // Step-less — value updates continuously as the user drags
+/// ContinuousPicker(value: $position, in: 0.0...1.0)
+/// ```
 public struct ContinuousPicker: View {
     @Binding private var value: Double
 
     private let range: ClosedRange<Double>
     private let step: Double?
 
+    /// Creates a continuous picker.
+    /// - Parameter value: A binding to the selected `Double` value. Values outside `range` are clamped.
+    /// - Parameter range: The valid range of values.
+    /// - Parameter step: The distance between snappable values. Pass `nil` (default) for free continuous drag.
     public init(value: Binding<Double>, in range: ClosedRange<Double>, step: Double? = nil) {
         self._value = value
         self.range = range

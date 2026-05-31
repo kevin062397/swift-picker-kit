@@ -7,8 +7,12 @@
 
 import SwiftUI
 
+/// The scroll axis of a picker control.
 public enum PickerOrientation: Sendable {
+    /// Items scroll left and right.
     case horizontal
+
+    /// Items scroll up and down.
     case vertical
 
     var scrollAxis: Axis.Set {
