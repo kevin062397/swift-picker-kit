@@ -91,7 +91,12 @@ struct FreeRulerRenderer: View {
                 )
         }
         .clipped()
-        .overlay(self.centerIndicator)
+        .overlay(
+            GeometryReader { proxy in
+                let crossAxisSize = self.orientation == .horizontal ? proxy.size.height : proxy.size.width
+                self.centerIndicator(crossAxisSize: crossAxisSize)
+            }
+        )
         .onChange(of: self.value) { _, newValue in
             if !self.isDragging {
                 self.startValue = newValue
@@ -125,15 +130,15 @@ struct FreeRulerRenderer: View {
     @ViewBuilder
     private func tickMark(index: Int, crossAxisSize: CGFloat) -> some View {
         let isMajor = index % self.majorTickEvery == 0
-        let majorLength: CGFloat = crossAxisSize * 0.7
-        let minorLength: CGFloat = crossAxisSize * 0.4
+        let majorLength: CGFloat = crossAxisSize
+        let minorLength: CGFloat = crossAxisSize * 2 / 3
         let tickLength = isMajor ? majorLength : minorLength
 
         if self.orientation == .horizontal {
             VStack(spacing: 0) {
                 Spacer(minLength: 0)
                 Rectangle()
-                    .fill(isMajor ? Color.primary.opacity(0.6) : Color.primary.opacity(0.25))
+                    .fill(isMajor ? Color.primary.opacity(0.5) : Color.primary.opacity(0.25))
                     .frame(width: 1, height: tickLength)
             }
             .frame(width: 1, height: crossAxisSize)
@@ -141,26 +146,32 @@ struct FreeRulerRenderer: View {
             HStack(spacing: 0) {
                 Spacer(minLength: 0)
                 Rectangle()
-                    .fill(isMajor ? Color.primary.opacity(0.6) : Color.primary.opacity(0.25))
+                    .fill(isMajor ? Color.primary.opacity(0.5) : Color.primary.opacity(0.25))
                     .frame(width: tickLength, height: 1)
             }
             .frame(width: crossAxisSize, height: 1)
         }
     }
 
-    private var centerIndicator: some View {
-        Group {
-            if self.orientation == .horizontal {
+    @ViewBuilder
+    private func centerIndicator(crossAxisSize: CGFloat) -> some View {
+        if self.orientation == .horizontal {
+            VStack(spacing: 0) {
+                Spacer(minLength: 0)
                 Rectangle()
                     .fill(Color.accentColor)
-                    .frame(width: 2)
-            } else {
-                Rectangle()
-                    .fill(Color.accentColor)
-                    .frame(height: 2)
+                    .frame(width: 3, height: crossAxisSize)
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        } else {
+            HStack(spacing: 0) {
+                Spacer(minLength: 0)
+                Rectangle()
+                    .fill(Color.accentColor)
+                    .frame(width: crossAxisSize, height: 3)
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
-        .allowsHitTesting(false)
     }
 
     private func offset(for value: Double) -> CGFloat {
