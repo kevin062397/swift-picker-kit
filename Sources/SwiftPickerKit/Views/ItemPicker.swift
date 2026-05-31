@@ -47,6 +47,7 @@ public struct ItemPicker<Value: Hashable, Label: View>: View {
         }
         .pickerDisplayStyle(.scrollWheel)
         .pickerOrientation(.horizontal)
+        .frame(height: 30)
     }
 }
 
@@ -61,5 +62,6 @@ public struct ItemPicker<Value: Hashable, Label: View>: View {
         }
         .pickerDisplayStyle(.tickMarkRuler)
         .pickerOrientation(.horizontal)
+        .frame(height: 30)
     }
 }

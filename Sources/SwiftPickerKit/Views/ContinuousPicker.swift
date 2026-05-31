@@ -71,21 +71,23 @@ public struct ContinuousPicker: View {
 #Preview("With Step") {
     @Previewable @State var value = 0.5
     VStack {
-        Text(value.formatted(.percent))
+        Text(String(format: "%.3f", value))
             .font(.body.monospacedDigit())
-        ContinuousPicker(value: $value, in: 0...1, step: 0.05)
+        ContinuousPicker(value: $value, in: 0...1, step: 0.1)
             .pickerDisplayStyle(.tickMarkRuler)
             .pickerOrientation(.horizontal)
+            .frame(height: 30)
     }
 }
 
 #Preview("No Step") {
     @Previewable @State var value = 0.5
     VStack {
-        Text(value.formatted(.percent))
+        Text(String(format: "%.3f", value))
             .font(.body.monospacedDigit())
         ContinuousPicker(value: $value, in: 0...1)
             .pickerDisplayStyle(.tickMarkRuler)
             .pickerOrientation(.horizontal)
+            .frame(height: 30)
     }
 }

@@ -149,6 +149,7 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
             Text("\(value)")
         }
         .pickerOrientation(.horizontal)
+        .frame(height: 30)
     }
 }
 
@@ -162,5 +163,6 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
             Text("\(value)")
         }
         .pickerOrientation(.vertical)
+        .frame(width: 30)
     }
 }
