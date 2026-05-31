@@ -153,22 +153,52 @@ struct FreeRulerRenderer: View {
     }
 }
 
-#Preview("Horizontal") {
+#Preview("Horizontal without Labels") {
     @Previewable @State var value = 0.5
     VStack {
-        Text(value.formatted(.percent))
+        Text(String(format: "%.3f", value))
             .font(.body.monospacedDigit())
         FreeRulerRenderer(value: $value, in: 0...1)
             .pickerOrientation(.horizontal)
+            .frame(height: 30)
     }
 }
 
-#Preview("Vertical") {
+#Preview("Horizontal with Labels") {
+    @Previewable @State var value = 0.5
+    VStack {
+        Text(String(format: "%.3f", value))
+            .font(.body.monospacedDigit())
+        FreeRulerRenderer(value: $value, in: 0...1)
+            .pickerOrientation(.horizontal)
+            .pickerRulerLabels(placement: .after) { index in
+                Text(String(format: "%.1f", Double(index) / 10))
+            }
+            .frame(height: 30)
+    }
+}
+
+#Preview("Vertical without Labels") {
     @Previewable @State var value = 0.5
     HStack {
-        Text(value.formatted(.percent))
+        Text(String(format: "%.3f", value))
             .font(.body.monospacedDigit())
         FreeRulerRenderer(value: $value, in: 0...1)
             .pickerOrientation(.vertical)
+            .frame(width: 30)
+    }
+}
+
+#Preview("Vertical with Labels") {
+    @Previewable @State var value = 0.5
+    HStack {
+        Text(String(format: "%.3f", value))
+            .font(.body.monospacedDigit())
+        FreeRulerRenderer(value: $value, in: 0...1)
+            .pickerOrientation(.vertical)
+            .pickerRulerLabels(placement: .after) { index in
+                Text(String(format: "%.1f", Double(index) / 10))
+            }
+            .frame(width: 30)
     }
 }

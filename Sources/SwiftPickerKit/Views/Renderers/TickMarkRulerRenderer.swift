@@ -164,7 +164,7 @@ struct TickMarkRulerRenderer<Value: Hashable>: View {
     }
 }
 
-#Preview("Horizontal") {
+#Preview("Horizontal without Labels") {
     @Previewable @State var selected = 50
     let values = Array(0...100)
     VStack {
@@ -172,10 +172,28 @@ struct TickMarkRulerRenderer<Value: Hashable>: View {
             .font(.body.monospacedDigit())
         TickMarkRulerRenderer(selection: $selected, values: values, tickSpacing: 10)
             .pickerOrientation(.horizontal)
+            .frame(height: 30)
     }
 }
 
-#Preview("Vertical") {
+#Preview("Horizontal with Labels") {
+    @Previewable @State var selected = 50
+    let values = Array(0...100)
+    VStack {
+        Text("\(selected)")
+            .font(.body.monospacedDigit())
+        TickMarkRulerRenderer(selection: $selected, values: values, tickSpacing: 10)
+            .pickerOrientation(.horizontal)
+            .pickerRulerLabels(placement: .after) { index in
+                Text("\(values[index])")
+                    .font(.caption.bold().monospacedDigit())
+                    .foregroundStyle(.secondary)
+            }
+            .frame(height: 30)
+    }
+}
+
+#Preview("Vertical without Labels") {
     @Previewable @State var selected = 50
     let values = Array(0...100)
     HStack {
@@ -183,5 +201,23 @@ struct TickMarkRulerRenderer<Value: Hashable>: View {
             .font(.body.monospacedDigit())
         TickMarkRulerRenderer(selection: $selected, values: values, tickSpacing: 10)
             .pickerOrientation(.vertical)
+            .frame(width: 30)
+    }
+}
+
+#Preview("Vertical with Labels") {
+    @Previewable @State var selected = 50
+    let values = Array(0...100)
+    HStack {
+        Text("\(selected)")
+            .font(.body.monospacedDigit())
+        TickMarkRulerRenderer(selection: $selected, values: values, tickSpacing: 10)
+            .pickerOrientation(.vertical)
+            .pickerRulerLabels(placement: .after) { index in
+                Text("\(values[index])")
+                    .font(.caption.bold().monospacedDigit())
+                    .foregroundStyle(.secondary)
+            }
+            .frame(width: 30)
     }
 }
