@@ -124,6 +124,7 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
         styled
             .onTapGesture {
                 withAnimation(.interactiveSpring()) {
+                    self.baseIndex = index
                     self.selection = self.values[index]
                 }
             }
