@@ -37,8 +37,8 @@ public struct ItemPicker<Value: Hashable, Label: View>: View {
 }
 
 #Preview("Scroll Wheel") {
-    @Previewable @State var selected = 10
-    let values = Array(0..<100)
+    @Previewable @State var selected = 50
+    let values = Array(0...100)
     VStack {
         Text("\(selected)")
             .font(.body.monospacedDigit())
@@ -51,8 +51,8 @@ public struct ItemPicker<Value: Hashable, Label: View>: View {
 }
 
 #Preview("Tick Mark Ruler") {
-    @Previewable @State var selected = 10
-    let values = Array(0..<100)
+    @Previewable @State var selected = 50
+    let values = Array(0...100)
     VStack {
         Text("\(selected)")
             .font(.body.monospacedDigit())

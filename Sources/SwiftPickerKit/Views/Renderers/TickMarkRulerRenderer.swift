@@ -146,8 +146,8 @@ struct TickMarkRulerRenderer<Value: Hashable>: View {
 }
 
 #Preview("Horizontal") {
-    @Previewable @State var selected = 10
-    let values = Array(0..<100)
+    @Previewable @State var selected = 50
+    let values = Array(0...100)
     VStack {
         Text("\(selected)")
             .font(.body.monospacedDigit())
@@ -157,8 +157,8 @@ struct TickMarkRulerRenderer<Value: Hashable>: View {
 }
 
 #Preview("Vertical") {
-    @Previewable @State var selected = 10
-    let values = Array(0..<100)
+    @Previewable @State var selected = 50
+    let values = Array(0...100)
     HStack {
         Text("\(selected)")
             .font(.body.monospacedDigit())
