@@ -38,7 +38,7 @@ public struct ContinuousPicker: View {
     }
 
     public var body: some View {
-        let clamped = min(max(self.value, self.range.lowerBound), self.range.upperBound)
+        let clamped = self.value.clamped(self.range.lowerBound, self.range.upperBound)
 
         if self.step != nil {
             // Stepped: snaps to discrete tick values

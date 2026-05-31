@@ -63,7 +63,7 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
                         // Update selection in real-time during drag
                         let offset = state / self.itemLength
                         let newIndex = (CGFloat(self.baseIndex) - offset).rounded()
-                        let clamped = Int(min(max(newIndex, 0), CGFloat(self.values.count - 1)))
+                        let clamped = Int(newIndex.clamped(0, CGFloat(self.values.count - 1)))
                         if self.values[clamped] != self.selection {
                             self.selection = self.values[clamped]
                         }
@@ -81,7 +81,7 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
                             : value.translation.height
                         let offset = translation / self.itemLength
                         let newIndex = (CGFloat(self.baseIndex) - offset).rounded()
-                        let clamped = Int(min(max(newIndex, 0), CGFloat(self.values.count - 1)))
+                        let clamped = Int(newIndex.clamped(0, CGFloat(self.values.count - 1)))
                         self.selection = self.values[clamped]
                         self.baseIndex = clamped
                         self.isDragging = false

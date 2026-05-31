@@ -63,7 +63,7 @@ struct TickMarkRulerRenderer<Value: Hashable>: View {
                                 : value.translation.height
                             let offset = state / self.tickSpacing
                             let newIndex = (CGFloat(self.baseIndex) - offset).rounded()
-                            let clamped = Int(min(max(newIndex, 0), CGFloat(self.tickCount - 1)))
+                            let clamped = Int(newIndex.clamped(0, CGFloat(self.tickCount - 1)))
                             if self.values[clamped] != self.selection {
                                 self.selection = self.values[clamped]
                             }
@@ -81,7 +81,7 @@ struct TickMarkRulerRenderer<Value: Hashable>: View {
                                 : value.translation.height
                             let offset = translation / self.tickSpacing
                             let newIndex = (CGFloat(self.baseIndex) - offset).rounded()
-                            let clamped = Int(min(max(newIndex, 0), CGFloat(tickCount - 1)))
+                            let clamped = Int(newIndex.clamped(0, CGFloat(self.tickCount - 1)))
                             self.selection = self.values[clamped]
                             self.baseIndex = clamped
                             self.isDragging = false
