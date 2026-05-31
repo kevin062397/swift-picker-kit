@@ -80,41 +80,42 @@ struct TickMarkRulerRenderer<Value: Hashable>: View {
                 }
                 .animation(.interactiveSpring(), value: self.selectedIndex)
                 .animation(.interactiveSpring(), value: self.dragTranslation)
-                .gesture(
-                    DragGesture()
-                        .updating(self.$dragTranslation) { value, state, _ in
-                            state =
-                                self.orientation == .horizontal
-                                ? value.translation.width
-                                : value.translation.height
-                            let offset = state / self.tickSpacing
-                            let newIndex = (CGFloat(self.baseIndex) - offset).rounded()
-                            let clamped = Int(newIndex.clamped(0, CGFloat(self.tickCount - 1)))
-                            if self.values[clamped] != self.selection {
-                                self.selection = self.values[clamped]
-                            }
-                        }
-                        .onChanged { _ in
-                            if !self.isDragging {
-                                self.isDragging = true
-                                self.onEditingChanged?(true)
-                            }
-                        }
-                        .onEnded { value in
-                            let translation =
-                                self.orientation == .horizontal
-                                ? value.translation.width
-                                : value.translation.height
-                            let offset = translation / self.tickSpacing
-                            let newIndex = (CGFloat(self.baseIndex) - offset).rounded()
-                            let clamped = Int(newIndex.clamped(0, CGFloat(self.tickCount - 1)))
-                            self.selection = self.values[clamped]
-                            self.baseIndex = clamped
-                            self.isDragging = false
-                            self.onEditingChanged?(false)
-                        }
-                )
         }
+        .contentShape(Rectangle())
+        .gesture(
+            DragGesture()
+                .updating(self.$dragTranslation) { value, state, _ in
+                    state =
+                        self.orientation == .horizontal
+                        ? value.translation.width
+                        : value.translation.height
+                    let offset = state / self.tickSpacing
+                    let newIndex = (CGFloat(self.baseIndex) - offset).rounded()
+                    let clamped = Int(newIndex.clamped(0, CGFloat(self.tickCount - 1)))
+                    if self.values[clamped] != self.selection {
+                        self.selection = self.values[clamped]
+                    }
+                }
+                .onChanged { _ in
+                    if !self.isDragging {
+                        self.isDragging = true
+                        self.onEditingChanged?(true)
+                    }
+                }
+                .onEnded { value in
+                    let translation =
+                        self.orientation == .horizontal
+                        ? value.translation.width
+                        : value.translation.height
+                    let offset = translation / self.tickSpacing
+                    let newIndex = (CGFloat(self.baseIndex) - offset).rounded()
+                    let clamped = Int(newIndex.clamped(0, CGFloat(self.tickCount - 1)))
+                    self.selection = self.values[clamped]
+                    self.baseIndex = clamped
+                    self.isDragging = false
+                    self.onEditingChanged?(false)
+                }
+        )
         .overlay {
             GeometryReader { proxy in
                 let crossAxisSize = self.orientation == .horizontal ? proxy.size.height : proxy.size.width

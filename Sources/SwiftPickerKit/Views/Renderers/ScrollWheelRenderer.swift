@@ -70,43 +70,44 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
             )
             .animation(.interactiveSpring(), value: self.selectedIndex)
             .animation(.interactiveSpring(), value: self.dragTranslation)
-            .gesture(
-                DragGesture()
-                    .updating(self.$dragTranslation) { value, state, _ in
-                        state =
-                            self.orientation == .horizontal
-                            ? value.translation.width
-                            : value.translation.height
-                        // Update selection in real-time during drag
-                        let offset = state / self.itemLength
-                        let newIndex = (CGFloat(self.baseIndex) - offset).rounded()
-                        let clamped = Int(newIndex.clamped(0, CGFloat(self.values.count - 1)))
-                        if self.values[clamped] != self.selection {
-                            self.selection = self.values[clamped]
-                        }
-                    }
-                    .onChanged { _ in
-                        if !self.isDragging {
-                            self.isDragging = true
-                            self.onEditingChanged?(true)
-                        }
-                    }
-                    .onEnded { value in
-                        let translation =
-                            self.orientation == .horizontal
-                            ? value.translation.width
-                            : value.translation.height
-                        let offset = translation / self.itemLength
-                        let newIndex = (CGFloat(self.baseIndex) - offset).rounded()
-                        let clamped = Int(newIndex.clamped(0, CGFloat(self.values.count - 1)))
-                        self.selection = self.values[clamped]
-                        self.baseIndex = clamped
-                        self.isDragging = false
-                        self.onEditingChanged?(false)
-                    }
-            )
         }
         .clipped()
+        .contentShape(Rectangle())
+        .gesture(
+            DragGesture()
+                .updating(self.$dragTranslation) { value, state, _ in
+                    state =
+                        self.orientation == .horizontal
+                        ? value.translation.width
+                        : value.translation.height
+                    // Update selection in real-time during drag
+                    let offset = state / self.itemLength
+                    let newIndex = (CGFloat(self.baseIndex) - offset).rounded()
+                    let clamped = Int(newIndex.clamped(0, CGFloat(self.values.count - 1)))
+                    if self.values[clamped] != self.selection {
+                        self.selection = self.values[clamped]
+                    }
+                }
+                .onChanged { _ in
+                    if !self.isDragging {
+                        self.isDragging = true
+                        self.onEditingChanged?(true)
+                    }
+                }
+                .onEnded { value in
+                    let translation =
+                        self.orientation == .horizontal
+                        ? value.translation.width
+                        : value.translation.height
+                    let offset = translation / self.itemLength
+                    let newIndex = (CGFloat(self.baseIndex) - offset).rounded()
+                    let clamped = Int(newIndex.clamped(0, CGFloat(self.values.count - 1)))
+                    self.selection = self.values[clamped]
+                    self.baseIndex = clamped
+                    self.isDragging = false
+                    self.onEditingChanged?(false)
+                }
+        )
         .onAppear {
             self.baseIndex = self.selectedIndex
         }

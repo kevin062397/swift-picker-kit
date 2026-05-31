@@ -86,35 +86,36 @@ struct FreeRulerRenderer: View {
                 }
                 .animation(nil, value: self.dragTranslation)
                 .animation(.interactiveSpring(), value: self.startValue)
-                .gesture(
-                    DragGesture()
-                        .updating(self.$dragTranslation) { gestureValue, state, _ in
-                            let translation =
-                                self.orientation == .horizontal
-                                ? gestureValue.translation.width
-                                : gestureValue.translation.height
-                            state = translation
-                            let delta = Double(translation) / Double(self.totalLength) * self.span
-                            let newValue = (self.startValue - delta)
-                                .clamped(self.range.lowerBound, self.range.upperBound)
-                            if newValue != self.value {
-                                self.value = newValue
-                            }
-                        }
-                        .onChanged { _ in
-                            if !self.isDragging {
-                                self.isDragging = true
-                                self.onEditingChanged?(true)
-                            }
-                        }
-                        .onEnded { _ in
-                            // Commit: move the base anchor to the final value position
-                            self.startValue = self.value
-                            self.isDragging = false
-                            self.onEditingChanged?(false)
-                        }
-                )
         }
+        .contentShape(Rectangle())
+        .gesture(
+            DragGesture()
+                .updating(self.$dragTranslation) { gestureValue, state, _ in
+                    let translation =
+                        self.orientation == .horizontal
+                        ? gestureValue.translation.width
+                        : gestureValue.translation.height
+                    state = translation
+                    let delta = Double(translation) / Double(self.totalLength) * self.span
+                    let newValue = (self.startValue - delta)
+                        .clamped(self.range.lowerBound, self.range.upperBound)
+                    if newValue != self.value {
+                        self.value = newValue
+                    }
+                }
+                .onChanged { _ in
+                    if !self.isDragging {
+                        self.isDragging = true
+                        self.onEditingChanged?(true)
+                    }
+                }
+                .onEnded { _ in
+                    // Commit: move the base anchor to the final value position
+                    self.startValue = self.value
+                    self.isDragging = false
+                    self.onEditingChanged?(false)
+                }
+        )
         .overlay {
             GeometryReader { proxy in
                 let crossAxisSize = self.orientation == .horizontal ? proxy.size.height : proxy.size.width
