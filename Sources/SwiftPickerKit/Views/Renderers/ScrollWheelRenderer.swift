@@ -42,13 +42,12 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
     private func itemOpacity(index: Int, dragOffset: CGFloat, viewSize: CGFloat) -> Double {
         guard self.fadeStrength > 0 else { return 1 }
         let center = viewSize / 2
-        let halfView = center
-        let plateau = self.fadePlateau.clamped(0, 1) * halfView
+        let plateau = self.fadePlateau.clamped(0, 1) * center
         // Item center in screen coordinates
         let itemCenter = dragOffset + CGFloat(index) * self.itemLength + self.itemLength / 2
         let distance = abs(itemCenter - center)
         guard distance > plateau else { return 1 }
-        let fadeDistance = halfView - plateau
+        let fadeDistance = center - plateau
         guard fadeDistance > 0 else { return 1 }
         let normalizedDistance = (distance - plateau) / fadeDistance
         return max(self.fadeMinOpacity.clamped(0, 1), 1 - Double(normalizedDistance * self.fadeStrength))

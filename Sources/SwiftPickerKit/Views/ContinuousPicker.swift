@@ -74,7 +74,6 @@ public struct ContinuousPicker: View {
         Text(String(format: "%.3f", value))
             .font(.body.monospacedDigit())
         ContinuousPicker(value: $value, in: 0...1, step: 0.1)
-            .pickerDisplayStyle(.tickMarkRuler)
             .pickerOrientation(.horizontal)
             .frame(height: 30)
     }
@@ -86,7 +85,6 @@ public struct ContinuousPicker: View {
         Text(String(format: "%.3f", value))
             .font(.body.monospacedDigit())
         ContinuousPicker(value: $value, in: 0...1)
-            .pickerDisplayStyle(.tickMarkRuler)
             .pickerOrientation(.horizontal)
             .frame(height: 30)
     }

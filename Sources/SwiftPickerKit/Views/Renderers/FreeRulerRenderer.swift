@@ -18,7 +18,6 @@ struct FreeRulerRenderer: View {
     @Environment(\.pickerRulerFadeStrength) private var fadeStrength
     @Environment(\.pickerRulerLabelContent) private var labelContent
     @Environment(\.pickerRulerLabelPlacement) private var labelPlacement
-    @Environment(\.pickerTickMarkRulerStyle) private var customStyle
 
     @Binding var value: Double
     let range: ClosedRange<Double>
@@ -139,14 +138,13 @@ struct FreeRulerRenderer: View {
             return Array(repeating: 1, count: self.tickCount)
         }
         let center = viewSize / 2
-        let halfView = center
-        let plateau = self.fadePlateau.clamped(0, 1) * halfView
+        let plateau = self.fadePlateau.clamped(0, 1) * center
         let minOpacity = self.fadeMinOpacity.clamped(0, 1)
         return (0..<self.tickCount).map { index in
             let tickCenter = dragOffset + CGFloat(index) * self.tickSpacing
             let distance = abs(tickCenter - center)
             guard distance > plateau else { return 1 }
-            let fadeDistance = halfView - plateau
+            let fadeDistance = center - plateau
             guard fadeDistance > 0 else { return 1 }
             let normalizedDistance = (distance - plateau) / fadeDistance
             return max(minOpacity, 1 - Double(normalizedDistance * self.fadeStrength))

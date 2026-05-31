@@ -48,6 +48,7 @@ struct RulerLabelStack: View {
                                 self.labelContent.makeLabel(index)
                                     .fixedSize()
                                     .offset(x: crossOffset)
+                                    .opacity(self.opacities.indices.contains(index) ? self.opacities[index] : 1)
                             }
                         }
                 }
