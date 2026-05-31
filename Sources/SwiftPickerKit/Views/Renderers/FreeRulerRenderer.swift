@@ -94,7 +94,7 @@ struct FreeRulerRenderer: View {
         .overlay(
             GeometryReader { proxy in
                 let crossAxisSize = self.orientation == .horizontal ? proxy.size.height : proxy.size.width
-                self.centerIndicator(crossAxisSize: crossAxisSize)
+                RulerCenterIndicator(crossAxisSize: crossAxisSize, orientation: self.orientation)
             }
         )
         .onChange(of: self.value) { _, newValue in
@@ -124,27 +124,6 @@ struct FreeRulerRenderer: View {
                     RulerTickMark(isMajor: index % self.majorTickEvery == 0, crossAxisSize: crossAxisSize, orientation: self.orientation)
                 }
             }
-        }
-    }
-
-    @ViewBuilder
-    private func centerIndicator(crossAxisSize: CGFloat) -> some View {
-        if self.orientation == .horizontal {
-            VStack(spacing: 0) {
-                Spacer(minLength: 0)
-                Rectangle()
-                    .fill(Color.accentColor)
-                    .frame(width: 3, height: crossAxisSize)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-        } else {
-            HStack(spacing: 0) {
-                Spacer(minLength: 0)
-                Rectangle()
-                    .fill(Color.accentColor)
-                    .frame(width: crossAxisSize, height: 3)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 

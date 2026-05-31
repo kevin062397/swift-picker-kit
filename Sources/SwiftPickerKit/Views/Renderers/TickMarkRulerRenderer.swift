@@ -93,7 +93,7 @@ struct TickMarkRulerRenderer<Value: Hashable>: View {
         .overlay(
             GeometryReader { proxy in
                 let crossAxisSize = self.orientation == .horizontal ? proxy.size.height : proxy.size.width
-                self.centerIndicator(crossAxisSize: crossAxisSize)
+                RulerCenterIndicator(crossAxisSize: crossAxisSize, orientation: self.orientation)
             }
         )
         .onAppear {
@@ -117,7 +117,7 @@ struct TickMarkRulerRenderer<Value: Hashable>: View {
             customStyle.makeBody(
                 configuration: PickerTickMarkRulerStyleConfiguration(
                     scale: AnyView(self.tickScale(proxy: proxy)),
-                    indicator: AnyView(self.centerIndicator(crossAxisSize: self.orientation == .horizontal ? proxy.size.height : proxy.size.width)),
+                    indicator: AnyView(RulerCenterIndicator(crossAxisSize: self.orientation == .horizontal ? proxy.size.height : proxy.size.width, orientation: self.orientation)),
                     currentValue: Double(self.selectedIndex),
                     range: 0...Double(self.tickCount - 1)
                 )
@@ -141,27 +141,6 @@ struct TickMarkRulerRenderer<Value: Hashable>: View {
                     RulerTickMark(isMajor: index % self.majorTickEvery == 0, crossAxisSize: proxy.size.width, orientation: self.orientation)
                 }
             }
-        }
-    }
-
-    @ViewBuilder
-    private func centerIndicator(crossAxisSize: CGFloat) -> some View {
-        if self.orientation == .horizontal {
-            VStack(spacing: 0) {
-                Spacer(minLength: 0)
-                Rectangle()
-                    .fill(Color.accentColor)
-                    .frame(width: 3, height: crossAxisSize)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-        } else {
-            HStack(spacing: 0) {
-                Spacer(minLength: 0)
-                Rectangle()
-                    .fill(Color.accentColor)
-                    .frame(width: crossAxisSize, height: 3)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 }

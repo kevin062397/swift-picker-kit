@@ -31,4 +31,8 @@ extension View {
     public func pickerOnEditingChanged(_ action: @escaping (Bool) -> Void) -> some View {
         self.environment(\.pickerOnEditingChanged, PickerEditingChangedAction(action: action))
     }
+
+    public func pickerRulerTickAlignment(_ alignment: PickerRulerTickAlignment) -> some View {
+        self.environment(\.pickerRulerTickAlignment, alignment)
+    }
 }

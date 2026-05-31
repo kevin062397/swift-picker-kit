@@ -1,5 +1,5 @@
 //
-//  RulerTickMark.swift
+//  RulerCenterIndicator.swift
 //  SwiftPickerKit
 //
 //  Created by Haoyuan Xia on 5/30/26.
@@ -7,45 +7,41 @@
 
 import SwiftUI
 
-struct RulerTickMark: View {
+struct RulerCenterIndicator: View {
     @Environment(\.pickerRulerTickAlignment) private var alignment
 
-    let isMajor: Bool
     let crossAxisSize: CGFloat
     let orientation: PickerOrientation
 
     var body: some View {
-        let majorLength: CGFloat = self.crossAxisSize
-        let minorLength: CGFloat = self.crossAxisSize * 2 / 3
-        let tickLength = self.isMajor ? majorLength : minorLength
-        let color: Color = self.isMajor ? Color.primary.opacity(0.5) : Color.primary.opacity(0.25)
-
         if self.orientation == .horizontal {
             VStack(spacing: 0) {
                 if self.alignment == .trailing {
                     Spacer(minLength: 0)
                 }
                 Rectangle()
-                    .fill(color)
-                    .frame(width: 1, height: tickLength)
+                    .fill(Color.accentColor)
+                    .frame(width: 3, height: self.crossAxisSize)
                 if self.alignment == .leading {
                     Spacer(minLength: 0)
                 }
             }
-            .frame(width: 1, height: self.crossAxisSize)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .allowsHitTesting(false)
         } else {
             HStack(spacing: 0) {
                 if self.alignment == .trailing {
                     Spacer(minLength: 0)
                 }
                 Rectangle()
-                    .fill(color)
-                    .frame(width: tickLength, height: 1)
+                    .fill(Color.accentColor)
+                    .frame(width: self.crossAxisSize, height: 3)
                 if self.alignment == .leading {
                     Spacer(minLength: 0)
                 }
             }
-            .frame(width: self.crossAxisSize, height: 1)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .allowsHitTesting(false)
         }
     }
 }
