@@ -115,41 +115,15 @@ struct FreeRulerRenderer: View {
         if self.orientation == .horizontal {
             HStack(spacing: self.tickSpacing - 1) {
                 ForEach(0..<self.tickCount, id: \.self) { index in
-                    self.tickMark(index: index, crossAxisSize: crossAxisSize)
+                    RulerTickMark(isMajor: index % self.majorTickEvery == 0, crossAxisSize: crossAxisSize, orientation: self.orientation)
                 }
             }
         } else {
             VStack(spacing: self.tickSpacing - 1) {
                 ForEach(0..<self.tickCount, id: \.self) { index in
-                    self.tickMark(index: index, crossAxisSize: crossAxisSize)
+                    RulerTickMark(isMajor: index % self.majorTickEvery == 0, crossAxisSize: crossAxisSize, orientation: self.orientation)
                 }
             }
-        }
-    }
-
-    @ViewBuilder
-    private func tickMark(index: Int, crossAxisSize: CGFloat) -> some View {
-        let isMajor = index % self.majorTickEvery == 0
-        let majorLength: CGFloat = crossAxisSize
-        let minorLength: CGFloat = crossAxisSize * 2 / 3
-        let tickLength = isMajor ? majorLength : minorLength
-
-        if self.orientation == .horizontal {
-            VStack(spacing: 0) {
-                Spacer(minLength: 0)
-                Rectangle()
-                    .fill(isMajor ? Color.primary.opacity(0.5) : Color.primary.opacity(0.25))
-                    .frame(width: 1, height: tickLength)
-            }
-            .frame(width: 1, height: crossAxisSize)
-        } else {
-            HStack(spacing: 0) {
-                Spacer(minLength: 0)
-                Rectangle()
-                    .fill(isMajor ? Color.primary.opacity(0.5) : Color.primary.opacity(0.25))
-                    .frame(width: tickLength, height: 1)
-            }
-            .frame(width: crossAxisSize, height: 1)
         }
     }
 
