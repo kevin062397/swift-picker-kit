@@ -68,7 +68,7 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
                 x: self.orientation == .horizontal ? dragOffset : 0,
                 y: self.orientation == .vertical ? dragOffset : 0
             )
-            .animation(.interactiveSpring(), value: self.selectedIndex)
+            .animation(.interactiveSpring(), value: self.baseIndex)
             .animation(.interactiveSpring(), value: self.dragTranslation)
         }
         .clipped()
@@ -80,30 +80,18 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
                         self.orientation == .horizontal
                         ? value.translation.width
                         : value.translation.height
-                    // Update selection in real-time during drag
-                    let offset = state / self.itemLength
-                    let newIndex = (CGFloat(self.baseIndex) - offset).rounded()
-                    let clamped = Int(newIndex.clamped(0, CGFloat(self.values.count - 1)))
-                    if self.values[clamped] != self.selection {
-                        self.selection = self.values[clamped]
-                    }
                 }
-                .onChanged { _ in
+                .onChanged { value in
                     if !self.isDragging {
                         self.isDragging = true
                         self.onEditingChanged?(true)
                     }
+                    // Update selection in real-time here rather than inside .updating, as writing @State inside .updating resets @GestureState mid-gesture
+                    self.updateSelection(from: value)
                 }
                 .onEnded { value in
-                    let translation =
-                        self.orientation == .horizontal
-                        ? value.translation.width
-                        : value.translation.height
-                    let offset = translation / self.itemLength
-                    let newIndex = (CGFloat(self.baseIndex) - offset).rounded()
-                    let clamped = Int(newIndex.clamped(0, CGFloat(self.values.count - 1)))
-                    self.selection = self.values[clamped]
-                    self.baseIndex = clamped
+                    self.updateSelection(from: value)
+                    self.baseIndex = self.selectedIndex
                     self.isDragging = false
                     self.onEditingChanged?(false)
                 }
@@ -127,27 +115,40 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
     private func itemView(index: Int, proxy: GeometryProxy, dragOffset: CGFloat, viewSize: CGFloat) -> some View {
         let distance = CGFloat(index - self.baseIndex) + self.dragTranslation / self.itemLength
         let opacity = self.itemOpacity(index: index, dragOffset: dragOffset, viewSize: viewSize)
-        let itemContent = self.label(self.values[index])
-            .frame(
-                width: self.orientation == .horizontal ? self.itemLength : proxy.size.width,
-                height: self.orientation == .vertical ? self.itemLength : proxy.size.height
-            )
-        let config = PickerScrollWheelStyleConfiguration(items: [
-            PickerScrollWheelStyleConfiguration.Item(
-                label: AnyView(itemContent),
-                isSelected: index == self.selectedIndex,
-                distanceFromCenter: distance
-            )
-        ])
-        let styled = self.customStyle.map { AnyView($0.makeBody(configuration: config)) } ?? AnyView(DefaultScrollWheelStyle().makeBody(configuration: config))
-        styled
-            .opacity(opacity)
-            .onTapGesture {
-                withAnimation(.interactiveSpring()) {
-                    self.baseIndex = index
-                    self.selection = self.values[index]
-                }
+        let isSelected = index == self.selectedIndex
+
+        ScrollWheelItemView(
+            isSelected: isSelected,
+            distance: distance,
+            itemLength: self.itemLength,
+            proxyWidth: proxy.size.width,
+            proxyHeight: proxy.size.height,
+            orientation: self.orientation,
+            label: self.label(self.values[index]),
+            customStyle: self.customStyle
+        )
+        .opacity(opacity)
+        .onTapGesture {
+            withAnimation(.interactiveSpring()) {
+                self.baseIndex = index
             }
+            withAnimation(.none) {
+                self.selection = self.values[index]
+            }
+        }
+    }
+
+    private func updateSelection(from value: DragGesture.Value) {
+        let translation = self.orientation == .horizontal ? value.translation.width : value.translation.height
+        let offset = translation / self.itemLength
+        let newIndex = (CGFloat(self.baseIndex) - offset).rounded()
+        let clamped = Int(newIndex.clamped(0, CGFloat(self.values.count - 1)))
+        if self.values[clamped] != self.selection {
+            // Suppress animation on selection writes during drag so that AnyView node replacement (inside custom styles) is instant — no position jump
+            withAnimation(.none) {
+                self.selection = self.values[clamped]
+            }
+        }
     }
 
     @ViewBuilder
@@ -156,6 +157,43 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
             HStack(spacing: 0, content: content)
         } else {
             VStack(spacing: 0, content: content)
+        }
+    }
+}
+
+// MARK: - Item view
+
+/// A concrete View struct for each scroll wheel item.
+/// Using a named struct (rather than inline construction) gives SwiftUI a stable
+/// view identity so that changes to `isSelected` or `distance` update the existing
+/// node rather than replacing it, avoiding implicit insertion/removal transitions.
+private struct ScrollWheelItemView<Label: View>: View {
+    let isSelected: Bool
+    let distance: CGFloat
+    let itemLength: CGFloat
+    let proxyWidth: CGFloat
+    let proxyHeight: CGFloat
+    let orientation: PickerOrientation
+    let label: Label
+    let customStyle: AnyPickerScrollWheelStyle?
+
+    var body: some View {
+        let itemContent = self.label
+            .frame(
+                width: self.orientation == .horizontal ? self.itemLength : self.proxyWidth,
+                height: self.orientation == .vertical ? self.itemLength : self.proxyHeight
+            )
+        let configuration = PickerScrollWheelStyleConfiguration(items: [
+            PickerScrollWheelStyleConfiguration.Item(
+                label: AnyView(itemContent),
+                isSelected: self.isSelected,
+                distanceFromCenter: self.distance
+            )
+        ])
+        if let customStyle {
+            customStyle.makeBody(configuration: configuration)
+        } else {
+            DefaultScrollWheelStyle().makeBody(configuration: configuration)
         }
     }
 }
