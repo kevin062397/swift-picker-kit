@@ -102,4 +102,13 @@ extension View {
     public func pickerRulerFadeStrength(_ strength: CGFloat) -> some View {
         self.environment(\.pickerRulerFadeStrength, strength)
     }
+
+    /// Sets the length of each item cell along the scroll axis in a scroll wheel picker.
+    ///
+    /// This controls how wide (horizontal) or tall (vertical) each item is, and therefore
+    /// how many items are visible at once. Default is `60`.
+    /// - Parameter length: The item cell length in points.
+    public func pickerScrollWheelItemLength(_ length: CGFloat) -> some View {
+        self.environment(\.pickerScrollWheelItemLength, length)
+    }
 }

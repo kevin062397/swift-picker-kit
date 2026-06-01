@@ -14,6 +14,7 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
     @Environment(\.pickerRulerFadeMinOpacity) private var fadeMinOpacity
     @Environment(\.pickerRulerFadePlateau) private var fadePlateau
     @Environment(\.pickerRulerFadeStrength) private var fadeStrength
+    @Environment(\.pickerScrollWheelItemLength) private var itemLength
     @Environment(\.pickerScrollWheelStyle) private var customStyle
 
     @GestureState private var dragTranslation: CGFloat = 0
@@ -24,13 +25,11 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
     @Binding var selection: Value
 
     let values: [Value]
-    var itemLength: CGFloat = 60
     let label: (Value) -> Label
 
-    init(selection: Binding<Value>, values: [Value], itemLength: CGFloat = 60, label: @escaping (Value) -> Label) {
+    init(selection: Binding<Value>, values: [Value], label: @escaping (Value) -> Label) {
         self._selection = selection
         self.values = values
-        self.itemLength = itemLength
         self.label = label
         self._baseIndex = State(initialValue: values.firstIndex(of: selection.wrappedValue) ?? 0)
     }
@@ -204,7 +203,7 @@ private struct ScrollWheelItemView<Label: View>: View {
     VStack {
         Text("\(selected)")
             .font(.body.monospacedDigit())
-        ScrollWheelRenderer(selection: $selected, values: values, itemLength: 60) { value in
+        ScrollWheelRenderer(selection: $selected, values: values) { value in
             Text("\(value)")
         }
         .pickerOrientation(.horizontal)
@@ -218,7 +217,7 @@ private struct ScrollWheelItemView<Label: View>: View {
     HStack {
         Text("\(selected)")
             .font(.body.monospacedDigit())
-        ScrollWheelRenderer(selection: $selected, values: values, itemLength: 60) { value in
+        ScrollWheelRenderer(selection: $selected, values: values) { value in
             Text("\(value)")
         }
         .pickerOrientation(.vertical)

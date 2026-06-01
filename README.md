@@ -151,6 +151,15 @@ Mirrors SwiftUI `Slider`'s `onEditingChanged` — fires `true` when drag starts,
 }
 ```
 
+### Scroll wheel item length
+
+Controls how wide (horizontal) or tall (vertical) each item cell is in the scroll wheel, which determines how many items are visible at once. Default is `60`.
+
+```swift
+.pickerScrollWheelItemLength(40)  // narrower items, more visible at once
+.pickerScrollWheelItemLength(80)  // wider items, fewer visible at once
+```
+
 ### Custom styles
 
 ```swift
