@@ -103,6 +103,14 @@ extension View {
         self.environment(\.pickerRulerFadeStrength, strength)
     }
 
+    /// Sets the visual appearance of tick marks on a ruler picker.
+    ///
+    /// - Parameter style: A ``PickerRulerTickStyle`` value specifying major and minor tick colors,
+    ///   line width, and the minor tick length ratio.
+    public func pickerRulerTickStyle(_ style: PickerRulerTickStyle) -> some View {
+        self.environment(\.pickerRulerTickStyle, style)
+    }
+
     /// Sets the length of each item cell along the scroll axis in a scroll wheel picker.
     ///
     /// This controls how wide (horizontal) or tall (vertical) each item is, and therefore

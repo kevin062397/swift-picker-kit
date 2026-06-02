@@ -9,6 +9,7 @@ import SwiftUI
 
 struct RulerTickMark: View {
     @Environment(\.pickerRulerTickAlignment) private var alignment
+    @Environment(\.pickerRulerTickStyle) private var tickStyle
 
     let isMajor: Bool
     let crossAxisSize: CGFloat
@@ -16,24 +17,25 @@ struct RulerTickMark: View {
     var opacity: Double = 1
 
     var body: some View {
-        let majorLength: CGFloat = self.crossAxisSize
-        let minorLength: CGFloat = self.crossAxisSize * 2 / 3
-        let tickLength = self.isMajor ? majorLength : minorLength
-        let color: Color = self.isMajor ? Color.primary.opacity(0.5 * self.opacity) : Color.primary.opacity(0.25 * self.opacity)
+        let ratio = self.isMajor ? 1 : self.tickStyle.minorLengthRatio.clamped(0, 1)
+        let tickLength = self.crossAxisSize * ratio
+        let baseColor = self.isMajor ? self.tickStyle.majorColor : self.tickStyle.minorColor
+        let color = baseColor.opacity(self.opacity)
+        let lineWidth = self.tickStyle.lineWidth
 
         if self.orientation == .horizontal {
             ZStack(alignment: self.alignment == .trailing ? .bottom : (self.alignment == .leading ? .top : .center)) {
-                Color.clear.frame(width: 1, height: self.crossAxisSize)
+                Color.clear.frame(width: lineWidth, height: self.crossAxisSize)
                 Rectangle()
                     .fill(color)
-                    .frame(width: 1, height: tickLength)
+                    .frame(width: lineWidth, height: tickLength)
             }
         } else {
             ZStack(alignment: self.alignment == .trailing ? .trailing : (self.alignment == .leading ? .leading : .center)) {
-                Color.clear.frame(width: self.crossAxisSize, height: 1)
+                Color.clear.frame(width: self.crossAxisSize, height: lineWidth)
                 Rectangle()
                     .fill(color)
-                    .frame(width: tickLength, height: 1)
+                    .frame(width: tickLength, height: lineWidth)
             }
         }
     }
