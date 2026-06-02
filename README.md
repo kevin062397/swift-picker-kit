@@ -13,6 +13,7 @@ A SwiftUI component library providing precise, customizable picker controls for 
 - **Full style customization** — conform to `PickerScrollWheelStyle` or `PickerTickMarkRulerStyle` for custom rendering
 - **Ruler labels** — configurable text labels at major tick marks
 - **Fade-out effect** — configurable opacity fade toward edges for both styles
+- **Ruler tick appearance** — configurable colors, line widths, and minor tick length for both tick marks and the center indicator
 - **Transparent backgrounds** — no imposed chrome; integrators own the background
 
 ## Requirements
@@ -211,6 +212,38 @@ All pickers fade items toward the edges of the visible area. Three modifiers con
 // Minimum opacity at the edge (0.0 = fully transparent, default)
 .pickerRulerFadeMinOpacity(0.0)
 ```
+
+### Ruler tick appearance
+
+Configures the visual appearance of tick marks and the center indicator on ruler pickers using a single `PickerRulerTickStyle` value. All properties have sensible defaults and can be set independently.
+
+```swift
+// Full customization
+ContinuousPicker(value: $value, in: 0...1, step: 0.1)
+    .pickerRulerTickStyle(PickerRulerTickStyle(
+        majorColor: .white.opacity(0.8),
+        minorColor: .white.opacity(0.4),
+        lineWidth: 1.5,
+        minorLengthRatio: 0.5,   // minor ticks are half the height of major ticks
+        indicatorColor: .yellow,
+        indicatorLineWidth: 2
+    ))
+
+// Partial customization — only override what you need
+ContinuousPicker(value: $value, in: 0...1)
+    .pickerRulerTickStyle(PickerRulerTickStyle(indicatorColor: .red))
+```
+
+`PickerRulerTickStyle` properties and defaults:
+
+| Property             | Default                       | Description                                        |
+| -------------------- | ----------------------------- | -------------------------------------------------- |
+| `majorColor`         | `Color.primary.opacity(0.5)`  | Color of major tick marks                          |
+| `minorColor`         | `Color.primary.opacity(0.25)` | Color of minor tick marks                          |
+| `lineWidth`          | `1`                           | Width of all tick marks in points                  |
+| `minorLengthRatio`   | `2/3`                         | Minor tick length as a fraction of cross-axis size |
+| `indicatorColor`     | `Color.accentColor`           | Color of the center indicator                      |
+| `indicatorLineWidth` | `3`                           | Width of the center indicator in points            |
 
 ## Custom Styles
 
