@@ -103,10 +103,10 @@ extension View {
         self.environment(\.pickerRulerFadeStrength, strength)
     }
 
-    /// Sets the visual appearance of tick marks on a ruler picker.
+    /// Sets the visual appearance of tick marks and the center indicator on a ruler picker.
     ///
     /// - Parameter style: A ``PickerRulerTickStyle`` value specifying major and minor tick colors,
-    ///   line width, and the minor tick length ratio.
+    ///   line width, minor tick length ratio, and center indicator color and line width.
     public func pickerRulerTickStyle(_ style: PickerRulerTickStyle) -> some View {
         self.environment(\.pickerRulerTickStyle, style)
     }
