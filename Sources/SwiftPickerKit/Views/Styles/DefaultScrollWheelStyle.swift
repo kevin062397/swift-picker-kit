@@ -9,7 +9,7 @@ import SwiftUI
 
 struct DefaultScrollWheelStyle: PickerScrollWheelStyle {
     func makeBody(configuration: PickerScrollWheelStyleConfiguration) -> some View {
-        HStack(spacing: 0) {
+        HStack(spacing: 0.0) {
             ForEach(configuration.items.indices, id: \.self) { index in
                 configuration.items[index].label
             }

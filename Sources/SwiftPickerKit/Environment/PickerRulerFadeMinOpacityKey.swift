@@ -11,7 +11,7 @@ struct PickerRulerFadeMinOpacityKey: EnvironmentKey {
     /// The minimum opacity applied to tick marks and labels at the edges of the view.
     /// 0.0 = fully transparent at the edge. Default.
     /// 1.0 = no fading effect regardless of fade strength.
-    static let defaultValue: Double = 0
+    static let defaultValue: Double = 0.0
 }
 
 extension EnvironmentValues {

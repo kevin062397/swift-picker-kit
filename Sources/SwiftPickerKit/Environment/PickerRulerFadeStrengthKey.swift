@@ -12,7 +12,7 @@ struct PickerRulerFadeStrengthKey: EnvironmentKey {
     /// 0.0 = no fading; all ticks are fully opaque.
     /// 1.0 = full fade; ticks at the edge reach minimum opacity. Default.
     /// Values above 1.0 cause ticks to reach minimum opacity before the edge.
-    static let defaultValue: CGFloat = 1
+    static let defaultValue: CGFloat = 1.0
 }
 
 extension EnvironmentValues {

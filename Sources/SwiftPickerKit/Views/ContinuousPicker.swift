@@ -37,7 +37,7 @@ public struct ContinuousPicker: View {
     }
 
     private var steppedValues: [Double] {
-        guard let step = self.step, step > 0 else { return [] }
+        guard let step = self.step, step > 0.0 else { return [] }
         let lower = self.range.lowerBound
         let upper = self.range.upperBound
         var result: [Double] = []
@@ -90,9 +90,9 @@ public struct ContinuousPicker: View {
     VStack {
         Text(String(format: "%.3f", value))
             .font(.body.monospacedDigit())
-        ContinuousPicker(value: $value, in: 0...1, step: 0.1)
+        ContinuousPicker(value: $value, in: 0.0...1.0, step: 0.1)
             .pickerOrientation(.horizontal)
-            .frame(height: 30)
+            .frame(height: 30.0)
     }
 }
 
@@ -101,8 +101,8 @@ public struct ContinuousPicker: View {
     VStack {
         Text(String(format: "%.3f", value))
             .font(.body.monospacedDigit())
-        ContinuousPicker(value: $value, in: 0...1)
+        ContinuousPicker(value: $value, in: 0.0...1.0)
             .pickerOrientation(.horizontal)
-            .frame(height: 30)
+            .frame(height: 30.0)
     }
 }

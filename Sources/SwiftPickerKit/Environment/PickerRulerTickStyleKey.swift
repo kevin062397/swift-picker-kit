@@ -33,10 +33,10 @@ public struct PickerRulerTickStyle: Sendable {
     public init(
         majorColor: Color = Color.primary.opacity(0.5),
         minorColor: Color = Color.primary.opacity(0.25),
-        lineWidth: CGFloat = 1,
-        minorLengthRatio: CGFloat = 2 / 3,
+        lineWidth: CGFloat = 1.0,
+        minorLengthRatio: CGFloat = 2.0 / 3.0,
         indicatorColor: Color = Color.accentColor,
-        indicatorLineWidth: CGFloat = 3
+        indicatorLineWidth: CGFloat = 3.0
     ) {
         self.majorColor = majorColor
         self.minorColor = minorColor

@@ -17,7 +17,7 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
     @Environment(\.pickerScrollWheelItemLength) private var itemLength
     @Environment(\.pickerScrollWheelStyle) private var customStyle
 
-    @GestureState private var dragTranslation: CGFloat = 0
+    @GestureState private var dragTranslation: CGFloat = 0.0
 
     @State private var baseIndex: Int
     @State private var isDragging = false
@@ -39,23 +39,23 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
     }
 
     private func itemOpacity(index: Int, dragOffset: CGFloat, viewSize: CGFloat) -> Double {
-        guard self.fadeStrength > 0 else { return 1 }
-        let center = viewSize / 2
-        let plateau = self.fadePlateau.clamped(0, 1) * center
+        guard self.fadeStrength > 0.0 else { return 1.0 }
+        let center = viewSize / 2.0
+        let plateau = self.fadePlateau.clamped(0.0, 1.0) * center
         // Item center in screen coordinates
-        let itemCenter = dragOffset + CGFloat(index) * self.itemLength + self.itemLength / 2
+        let itemCenter = dragOffset + CGFloat(index) * self.itemLength + self.itemLength / 2.0
         let distance = abs(itemCenter - center)
-        guard distance > plateau else { return 1 }
+        guard distance > plateau else { return 1.0 }
         let fadeDistance = center - plateau
-        guard fadeDistance > 0 else { return 1 }
+        guard fadeDistance > 0.0 else { return 1.0 }
         let normalizedDistance = (distance - plateau) / fadeDistance
-        return max(self.fadeMinOpacity.clamped(0, 1), 1 - Double(normalizedDistance * self.fadeStrength))
+        return max(self.fadeMinOpacity.clamped(0.0, 1.0), 1.0 - Double(normalizedDistance * self.fadeStrength))
     }
 
     var body: some View {
         GeometryReader { proxy in
             let viewSize = self.orientation == .horizontal ? proxy.size.width : proxy.size.height
-            let centerOffset = viewSize / 2 - self.itemLength / 2
+            let centerOffset = viewSize / 2.0 - self.itemLength / 2.0
             let dragOffset = centerOffset - CGFloat(self.baseIndex) * self.itemLength + self.dragTranslation
 
             self.itemStack {
@@ -64,8 +64,8 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
                 }
             }
             .offset(
-                x: self.orientation == .horizontal ? dragOffset : 0,
-                y: self.orientation == .vertical ? dragOffset : 0
+                x: self.orientation == .horizontal ? dragOffset : 0.0,
+                y: self.orientation == .vertical ? dragOffset : 0.0
             )
             .animation(.interactiveSpring(), value: self.baseIndex)
             .animation(.interactiveSpring(), value: self.dragTranslation)
@@ -141,7 +141,7 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
         let translation = self.orientation == .horizontal ? value.translation.width : value.translation.height
         let offset = translation / self.itemLength
         let newIndex = (CGFloat(self.baseIndex) - offset).rounded()
-        let clamped = Int(newIndex.clamped(0, CGFloat(self.values.count - 1)))
+        let clamped = Int(newIndex.clamped(0.0, CGFloat(self.values.count - 1)))
         if self.values[clamped] != self.selection {
             // Suppress animation on selection writes during drag so that AnyView node replacement (inside custom styles) is instant — no position jump
             withAnimation(.none) {
@@ -153,9 +153,9 @@ struct ScrollWheelRenderer<Value: Hashable, Label: View>: View {
     @ViewBuilder
     private func itemStack<Content: View>(@ViewBuilder content: () -> Content) -> some View {
         if self.orientation == .horizontal {
-            HStack(spacing: 0, content: content)
+            HStack(spacing: 0.0, content: content)
         } else {
-            VStack(spacing: 0, content: content)
+            VStack(spacing: 0.0, content: content)
         }
     }
 }
@@ -207,7 +207,7 @@ private struct ScrollWheelItemView<Label: View>: View {
             Text("\(value)")
         }
         .pickerOrientation(.horizontal)
-        .frame(height: 30)
+        .frame(height: 30.0)
     }
 }
 
@@ -221,6 +221,6 @@ private struct ScrollWheelItemView<Label: View>: View {
             Text("\(value)")
         }
         .pickerOrientation(.vertical)
-        .frame(width: 30)
+        .frame(width: 30.0)
     }
 }

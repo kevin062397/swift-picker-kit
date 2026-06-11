@@ -19,29 +19,29 @@ struct RulerCenterIndicator: View {
         let lineWidth = self.tickStyle.indicatorLineWidth
 
         if self.orientation == .horizontal {
-            VStack(spacing: 0) {
+            VStack(spacing: 0.0) {
                 if self.tickAlignment == .trailing {
-                    Spacer(minLength: 0)
+                    Spacer(minLength: 0.0)
                 }
                 Rectangle()
                     .fill(color)
                     .frame(width: lineWidth, height: self.crossAxisSize)
                 if self.tickAlignment == .leading {
-                    Spacer(minLength: 0)
+                    Spacer(minLength: 0.0)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .allowsHitTesting(false)
         } else {
-            HStack(spacing: 0) {
+            HStack(spacing: 0.0) {
                 if self.tickAlignment == .trailing {
-                    Spacer(minLength: 0)
+                    Spacer(minLength: 0.0)
                 }
                 Rectangle()
                     .fill(color)
                     .frame(width: self.crossAxisSize, height: lineWidth)
                 if self.tickAlignment == .leading {
-                    Spacer(minLength: 0)
+                    Spacer(minLength: 0.0)
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)

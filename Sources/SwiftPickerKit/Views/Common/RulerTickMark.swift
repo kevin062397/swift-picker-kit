@@ -14,10 +14,10 @@ struct RulerTickMark: View {
     let isMajor: Bool
     let crossAxisSize: CGFloat
     let orientation: PickerOrientation
-    var opacity: Double = 1
+    var opacity: Double = 1.0
 
     var body: some View {
-        let ratio = self.isMajor ? 1 : self.tickStyle.minorLengthRatio.clamped(0, 1)
+        let ratio = self.isMajor ? 1.0 : self.tickStyle.minorLengthRatio.clamped(0.0, 1.0)
         let tickLength = self.crossAxisSize * ratio
         let baseColor = self.isMajor ? self.tickStyle.majorColor : self.tickStyle.minorColor
         let color = baseColor.opacity(self.opacity)

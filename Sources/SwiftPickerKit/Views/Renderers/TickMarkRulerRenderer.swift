@@ -18,7 +18,7 @@ struct TickMarkRulerRenderer<Value: Hashable>: View {
     @Environment(\.pickerRulerLabelPlacement) private var labelPlacement
     @Environment(\.pickerTickMarkRulerStyle) private var customStyle
 
-    @GestureState private var dragTranslation: CGFloat = 0
+    @GestureState private var dragTranslation: CGFloat = 0.0
 
     @State private var baseIndex: Int
     @State private var isDragging = false
@@ -27,10 +27,10 @@ struct TickMarkRulerRenderer<Value: Hashable>: View {
 
     let values: [Value]
     /// Distance between tick centers in points.
-    var tickSpacing: CGFloat = 10
+    var tickSpacing: CGFloat = 10.0
     var majorTickEvery: Int = 10
 
-    init(selection: Binding<Value>, values: [Value], tickSpacing: CGFloat = 10, majorTickEvery: Int = 10) {
+    init(selection: Binding<Value>, values: [Value], tickSpacing: CGFloat = 10.0, majorTickEvery: Int = 10) {
         self._selection = selection
         self.values = values
         self.tickSpacing = tickSpacing
@@ -49,7 +49,7 @@ struct TickMarkRulerRenderer<Value: Hashable>: View {
     var body: some View {
         GeometryReader { proxy in
             let viewSize = self.orientation == .horizontal ? proxy.size.width : proxy.size.height
-            let centerOffset = viewSize / 2
+            let centerOffset = viewSize / 2.0
             let dragOffset = centerOffset - CGFloat(self.baseIndex) * self.tickSpacing + self.dragTranslation
             let crossAxisSize = self.orientation == .horizontal ? proxy.size.height : proxy.size.width
 
@@ -57,8 +57,8 @@ struct TickMarkRulerRenderer<Value: Hashable>: View {
 
             self.tickContent(proxy: proxy, opacities: opacities)
                 .offset(
-                    x: self.orientation == .horizontal ? dragOffset : 0,
-                    y: self.orientation == .vertical ? dragOffset : 0
+                    x: self.orientation == .horizontal ? dragOffset : 0.0,
+                    y: self.orientation == .vertical ? dragOffset : 0.0
                 )
                 .frame(width: proxy.size.width, height: proxy.size.height, alignment: .topLeading)
                 .clipped()
@@ -73,8 +73,8 @@ struct TickMarkRulerRenderer<Value: Hashable>: View {
                             opacities: opacities
                         )
                         .offset(
-                            x: self.orientation == .horizontal ? dragOffset : 0,
-                            y: self.orientation == .vertical ? dragOffset : 0
+                            x: self.orientation == .horizontal ? dragOffset : 0.0,
+                            y: self.orientation == .vertical ? dragOffset : 0.0
                         )
                     }
                 }
@@ -91,7 +91,7 @@ struct TickMarkRulerRenderer<Value: Hashable>: View {
                         : value.translation.height
                     let offset = state / self.tickSpacing
                     let newIndex = (CGFloat(self.baseIndex) - offset).rounded()
-                    let clamped = Int(newIndex.clamped(0, CGFloat(self.tickCount - 1)))
+                    let clamped = Int(newIndex.clamped(0.0, CGFloat(self.tickCount - 1)))
                     if self.values[clamped] != self.selection {
                         self.selection = self.values[clamped]
                     }
@@ -109,7 +109,7 @@ struct TickMarkRulerRenderer<Value: Hashable>: View {
                         : value.translation.height
                     let offset = translation / self.tickSpacing
                     let newIndex = (CGFloat(self.baseIndex) - offset).rounded()
-                    let clamped = Int(newIndex.clamped(0, CGFloat(self.tickCount - 1)))
+                    let clamped = Int(newIndex.clamped(0.0, CGFloat(self.tickCount - 1)))
                     self.selection = self.values[clamped]
                     self.baseIndex = clamped
                     self.isDragging = false
@@ -138,20 +138,20 @@ struct TickMarkRulerRenderer<Value: Hashable>: View {
     }
 
     private func tickOpacities(dragOffset: CGFloat, viewSize: CGFloat) -> [Double] {
-        guard self.fadeStrength > 0 else {
-            return Array(repeating: 1, count: self.tickCount)
+        guard self.fadeStrength > 0.0 else {
+            return Array(repeating: 1.0, count: self.tickCount)
         }
-        let center = viewSize / 2
-        let plateau = self.fadePlateau.clamped(0, 1) * center
-        let minOpacity = self.fadeMinOpacity.clamped(0, 1)
+        let center = viewSize / 2.0
+        let plateau = self.fadePlateau.clamped(0.0, 1.0) * center
+        let minOpacity = self.fadeMinOpacity.clamped(0.0, 1.0)
         return (0..<self.tickCount).map { index in
             let tickCenter = dragOffset + CGFloat(index) * self.tickSpacing
             let distance = abs(tickCenter - center)
-            guard distance > plateau else { return 1 }
+            guard distance > plateau else { return 1.0 }
             let fadeDistance = center - plateau
-            guard fadeDistance > 0 else { return 1 }
+            guard fadeDistance > 0.0 else { return 1.0 }
             let normalizedDistance = (distance - plateau) / fadeDistance
-            return max(minOpacity, 1 - Double(normalizedDistance * self.fadeStrength))
+            return max(minOpacity, 1.0 - Double(normalizedDistance * self.fadeStrength))
         }
     }
 
@@ -163,7 +163,7 @@ struct TickMarkRulerRenderer<Value: Hashable>: View {
                     scale: AnyView(self.tickScale(proxy: proxy, opacities: opacities)),
                     indicator: AnyView(RulerCenterIndicator(crossAxisSize: self.orientation == .horizontal ? proxy.size.height : proxy.size.width, orientation: self.orientation)),
                     currentValue: Double(self.selectedIndex),
-                    range: 0...Double(self.tickCount - 1)
+                    range: 0.0...Double(self.tickCount - 1)
                 )
             )
         } else {
@@ -174,24 +174,24 @@ struct TickMarkRulerRenderer<Value: Hashable>: View {
     @ViewBuilder
     private func tickScale(proxy: GeometryProxy, opacities: [Double]) -> some View {
         if self.orientation == .horizontal {
-            HStack(spacing: self.tickSpacing - 1) {
+            HStack(spacing: self.tickSpacing - 1.0) {
                 ForEach(0..<self.tickCount, id: \.self) { index in
                     RulerTickMark(
                         isMajor: index % self.majorTickEvery == 0,
                         crossAxisSize: proxy.size.height,
                         orientation: self.orientation,
-                        opacity: opacities.indices.contains(index) ? opacities[index] : 1
+                        opacity: opacities.indices.contains(index) ? opacities[index] : 1.0
                     )
                 }
             }
         } else {
-            VStack(spacing: self.tickSpacing - 1) {
+            VStack(spacing: self.tickSpacing - 1.0) {
                 ForEach(0..<self.tickCount, id: \.self) { index in
                     RulerTickMark(
                         isMajor: index % self.majorTickEvery == 0,
                         crossAxisSize: proxy.size.width,
                         orientation: self.orientation,
-                        opacity: opacities.indices.contains(index) ? opacities[index] : 1
+                        opacity: opacities.indices.contains(index) ? opacities[index] : 1.0
                     )
                 }
             }
@@ -205,9 +205,9 @@ struct TickMarkRulerRenderer<Value: Hashable>: View {
     VStack {
         Text("\(selected)")
             .font(.body.monospacedDigit())
-        TickMarkRulerRenderer(selection: $selected, values: values, tickSpacing: 10)
+        TickMarkRulerRenderer(selection: $selected, values: values, tickSpacing: 10.0)
             .pickerOrientation(.horizontal)
-            .frame(height: 30)
+            .frame(height: 30.0)
     }
 }
 
@@ -217,14 +217,14 @@ struct TickMarkRulerRenderer<Value: Hashable>: View {
     VStack {
         Text("\(selected)")
             .font(.body.monospacedDigit())
-        TickMarkRulerRenderer(selection: $selected, values: values, tickSpacing: 10)
+        TickMarkRulerRenderer(selection: $selected, values: values, tickSpacing: 10.0)
             .pickerOrientation(.horizontal)
             .pickerRulerLabels(placement: .after) { index in
                 Text("\(values[index])")
                     .font(.caption.bold().monospacedDigit())
                     .foregroundStyle(.secondary)
             }
-            .frame(height: 30)
+            .frame(height: 30.0)
     }
 }
 
@@ -234,9 +234,9 @@ struct TickMarkRulerRenderer<Value: Hashable>: View {
     HStack {
         Text("\(selected)")
             .font(.body.monospacedDigit())
-        TickMarkRulerRenderer(selection: $selected, values: values, tickSpacing: 10)
+        TickMarkRulerRenderer(selection: $selected, values: values, tickSpacing: 10.0)
             .pickerOrientation(.vertical)
-            .frame(width: 30)
+            .frame(width: 30.0)
     }
 }
 
@@ -246,13 +246,13 @@ struct TickMarkRulerRenderer<Value: Hashable>: View {
     HStack {
         Text("\(selected)")
             .font(.body.monospacedDigit())
-        TickMarkRulerRenderer(selection: $selected, values: values, tickSpacing: 10)
+        TickMarkRulerRenderer(selection: $selected, values: values, tickSpacing: 10.0)
             .pickerOrientation(.vertical)
             .pickerRulerLabels(placement: .after) { index in
                 Text("\(values[index])")
                     .font(.caption.bold().monospacedDigit())
                     .foregroundStyle(.secondary)
             }
-            .frame(width: 30)
+            .frame(width: 30.0)
     }
 }

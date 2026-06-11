@@ -22,10 +22,10 @@ struct FreeRulerRenderer: View {
     @Binding var value: Double
     let range: ClosedRange<Double>
 
-    var tickSpacing: CGFloat = 10
+    var tickSpacing: CGFloat = 10.0
     var majorTickEvery: Int = 10
 
-    @GestureState private var dragTranslation: CGFloat = 0
+    @GestureState private var dragTranslation: CGFloat = 0.0
     @State private var startValue: Double
     @State private var isDragging = false
 
@@ -34,14 +34,14 @@ struct FreeRulerRenderer: View {
     }
 
     private var tickCount: Int {
-        return max(1, min(Int((self.span * 10).rounded(.up)), 500)) + 1
+        return max(1, min(Int((self.span * 10.0).rounded(.up)), 500)) + 1
     }
 
     private var totalLength: CGFloat {
         return CGFloat(self.tickCount - 1) * self.tickSpacing
     }
 
-    init(value: Binding<Double>, in range: ClosedRange<Double>, tickSpacing: CGFloat = 10, majorTickEvery: Int = 10) {
+    init(value: Binding<Double>, in range: ClosedRange<Double>, tickSpacing: CGFloat = 10.0, majorTickEvery: Int = 10) {
         self._value = value
         self.range = range
         self.tickSpacing = tickSpacing
@@ -52,7 +52,7 @@ struct FreeRulerRenderer: View {
     var body: some View {
         GeometryReader { proxy in
             let viewSize = self.orientation == .horizontal ? proxy.size.width : proxy.size.height
-            let centerOffset = viewSize / 2
+            let centerOffset = viewSize / 2.0
             // Visual offset is anchored to startValue — only dragTranslation moves the strip
             // This avoids a feedback loop where value changes also shift the strip
             let baseOffset = self.offset(for: self.startValue)
@@ -63,8 +63,8 @@ struct FreeRulerRenderer: View {
 
             self.tickScale(proxy: proxy, opacities: opacities)
                 .offset(
-                    x: self.orientation == .horizontal ? dragOffset : 0,
-                    y: self.orientation == .vertical ? dragOffset : 0
+                    x: self.orientation == .horizontal ? dragOffset : 0.0,
+                    y: self.orientation == .vertical ? dragOffset : 0.0
                 )
                 .frame(width: proxy.size.width, height: proxy.size.height, alignment: .topLeading)
                 .clipped()
@@ -79,8 +79,8 @@ struct FreeRulerRenderer: View {
                             opacities: opacities
                         )
                         .offset(
-                            x: self.orientation == .horizontal ? dragOffset : 0,
-                            y: self.orientation == .vertical ? dragOffset : 0
+                            x: self.orientation == .horizontal ? dragOffset : 0.0,
+                            y: self.orientation == .vertical ? dragOffset : 0.0
                         )
                     }
                 }
@@ -135,20 +135,20 @@ struct FreeRulerRenderer: View {
     }
 
     private func tickOpacities(dragOffset: CGFloat, viewSize: CGFloat) -> [Double] {
-        guard self.fadeStrength > 0 else {
-            return Array(repeating: 1, count: self.tickCount)
+        guard self.fadeStrength > 0.0 else {
+            return Array(repeating: 1.0, count: self.tickCount)
         }
-        let center = viewSize / 2
-        let plateau = self.fadePlateau.clamped(0, 1) * center
-        let minOpacity = self.fadeMinOpacity.clamped(0, 1)
+        let center = viewSize / 2.0
+        let plateau = self.fadePlateau.clamped(0.0, 1.0) * center
+        let minOpacity = self.fadeMinOpacity.clamped(0.0, 1.0)
         return (0..<self.tickCount).map { index in
             let tickCenter = dragOffset + CGFloat(index) * self.tickSpacing
             let distance = abs(tickCenter - center)
-            guard distance > plateau else { return 1 }
+            guard distance > plateau else { return 1.0 }
             let fadeDistance = center - plateau
-            guard fadeDistance > 0 else { return 1 }
+            guard fadeDistance > 0.0 else { return 1.0 }
             let normalizedDistance = (distance - plateau) / fadeDistance
-            return max(minOpacity, 1 - Double(normalizedDistance * self.fadeStrength))
+            return max(minOpacity, 1.0 - Double(normalizedDistance * self.fadeStrength))
         }
     }
 
@@ -156,24 +156,24 @@ struct FreeRulerRenderer: View {
     private func tickScale(proxy: GeometryProxy, opacities: [Double]) -> some View {
         let crossAxisSize = self.orientation == .horizontal ? proxy.size.height : proxy.size.width
         if self.orientation == .horizontal {
-            HStack(spacing: self.tickSpacing - 1) {
+            HStack(spacing: self.tickSpacing - 1.0) {
                 ForEach(0..<self.tickCount, id: \.self) { index in
                     RulerTickMark(
                         isMajor: index % self.majorTickEvery == 0,
                         crossAxisSize: crossAxisSize,
                         orientation: self.orientation,
-                        opacity: opacities.indices.contains(index) ? opacities[index] : 1
+                        opacity: opacities.indices.contains(index) ? opacities[index] : 1.0
                     )
                 }
             }
         } else {
-            VStack(spacing: self.tickSpacing - 1) {
+            VStack(spacing: self.tickSpacing - 1.0) {
                 ForEach(0..<self.tickCount, id: \.self) { index in
                     RulerTickMark(
                         isMajor: index % self.majorTickEvery == 0,
                         crossAxisSize: crossAxisSize,
                         orientation: self.orientation,
-                        opacity: opacities.indices.contains(index) ? opacities[index] : 1
+                        opacity: opacities.indices.contains(index) ? opacities[index] : 1.0
                     )
                 }
             }
@@ -181,7 +181,7 @@ struct FreeRulerRenderer: View {
     }
 
     private func offset(for value: Double) -> CGFloat {
-        guard self.span > 0 else { return 0 }
+        guard self.span > 0.0 else { return 0.0 }
         let normalized = (value - self.range.lowerBound) / self.span
         return CGFloat(normalized) * self.totalLength
     }
@@ -192,9 +192,9 @@ struct FreeRulerRenderer: View {
     VStack {
         Text(String(format: "%.3f", value))
             .font(.body.monospacedDigit())
-        FreeRulerRenderer(value: $value, in: 0...1)
+        FreeRulerRenderer(value: $value, in: 0.0...1.0)
             .pickerOrientation(.horizontal)
-            .frame(height: 30)
+            .frame(height: 30.0)
     }
 }
 
@@ -203,14 +203,14 @@ struct FreeRulerRenderer: View {
     VStack {
         Text(String(format: "%.3f", value))
             .font(.body.monospacedDigit())
-        FreeRulerRenderer(value: $value, in: 0...1)
+        FreeRulerRenderer(value: $value, in: 0.0...1.0)
             .pickerOrientation(.horizontal)
             .pickerRulerLabels(placement: .after) { index in
-                Text(String(format: "%.1f", Double(index) / 10))
+                Text(String(format: "%.1f", Double(index) / 10.0))
                     .font(.caption.bold().monospacedDigit())
                     .foregroundStyle(.secondary)
             }
-            .frame(height: 30)
+            .frame(height: 30.0)
     }
 }
 
@@ -219,9 +219,9 @@ struct FreeRulerRenderer: View {
     HStack {
         Text(String(format: "%.3f", value))
             .font(.body.monospacedDigit())
-        FreeRulerRenderer(value: $value, in: 0...1)
+        FreeRulerRenderer(value: $value, in: 0.0...1.0)
             .pickerOrientation(.vertical)
-            .frame(width: 30)
+            .frame(width: 30.0)
     }
 }
 
@@ -230,13 +230,13 @@ struct FreeRulerRenderer: View {
     HStack {
         Text(String(format: "%.3f", value))
             .font(.body.monospacedDigit())
-        FreeRulerRenderer(value: $value, in: 0...1)
+        FreeRulerRenderer(value: $value, in: 0.0...1.0)
             .pickerOrientation(.vertical)
             .pickerRulerLabels(placement: .after) { index in
-                Text(String(format: "%.1f", Double(index) / 10))
+                Text(String(format: "%.1f", Double(index) / 10.0))
                     .font(.caption.bold().monospacedDigit())
                     .foregroundStyle(.secondary)
             }
-            .frame(width: 30)
+            .frame(width: 30.0)
     }
 }
