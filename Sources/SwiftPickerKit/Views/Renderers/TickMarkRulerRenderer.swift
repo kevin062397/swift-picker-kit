@@ -78,7 +78,7 @@ struct TickMarkRulerRenderer<Value: Hashable>: View {
                         )
                     }
                 }
-                .animation(.interactiveSpring(), value: self.selectedIndex)
+                .animation(.interactiveSpring(), value: self.baseIndex)
                 .animation(.interactiveSpring(), value: self.dragTranslation)
         }
         .contentShape(Rectangle())
