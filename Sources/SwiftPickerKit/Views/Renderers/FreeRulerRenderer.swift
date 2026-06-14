@@ -9,7 +9,7 @@ import SwiftUI
 
 /// A ruler renderer for step-less continuous ranges.
 /// Drag moves the ruler freely with no snapping — value updates proportionally to position.
-struct FreeRulerRenderer: View {
+struct FreeRulerRenderer<Value: BinaryFloatingPoint>: View {
     @Environment(\.pickerHapticsMode) private var hapticsMode
     @Environment(\.pickerOnEditingChanged) private var onEditingChanged
     @Environment(\.pickerOrientation) private var orientation
@@ -19,17 +19,17 @@ struct FreeRulerRenderer: View {
     @Environment(\.pickerRulerLabelContent) private var labelContent
     @Environment(\.pickerRulerLabelPlacement) private var labelPlacement
 
-    @Binding var value: Double
-    let range: ClosedRange<Double>
+    @Binding var value: Value
+    let range: ClosedRange<Value>
 
     var tickSpacing: CGFloat = 10.0
     var majorTickEvery: Int = 10
 
     @GestureState private var dragTranslation: CGFloat = 0.0
-    @State private var startValue: Double
+    @State private var startValue: Value
     @State private var isDragging = false
 
-    private var span: Double {
+    private var span: Value {
         return self.range.upperBound - self.range.lowerBound
     }
 
@@ -41,7 +41,7 @@ struct FreeRulerRenderer: View {
         return CGFloat(self.tickCount - 1) * self.tickSpacing
     }
 
-    init(value: Binding<Double>, in range: ClosedRange<Double>, tickSpacing: CGFloat = 10.0, majorTickEvery: Int = 10) {
+    init(value: Binding<Value>, in range: ClosedRange<Value>, tickSpacing: CGFloat = 10.0, majorTickEvery: Int = 10) {
         self._value = value
         self.range = range
         self.tickSpacing = tickSpacing
@@ -96,7 +96,7 @@ struct FreeRulerRenderer: View {
                         ? gestureValue.translation.width
                         : gestureValue.translation.height
                     state = translation
-                    let delta = Double(translation) / Double(self.totalLength) * self.span
+                    let delta = Value(translation) / Value(self.totalLength) * self.span
                     let newValue = (self.startValue - delta)
                         .clamped(self.range.lowerBound, self.range.upperBound)
                     if newValue != self.value {
@@ -180,7 +180,7 @@ struct FreeRulerRenderer: View {
         }
     }
 
-    private func offset(for value: Double) -> CGFloat {
+    private func offset(for value: Value) -> CGFloat {
         guard self.span > 0.0 else { return 0.0 }
         let normalized = (value - self.range.lowerBound) / self.span
         return CGFloat(normalized) * self.totalLength

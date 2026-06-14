@@ -83,7 +83,7 @@ VStack {
 
 ### ContinuousPicker — numeric ranges
 
-Use `ContinuousPicker` for `Double` values within a range. Provide a `step` for snapping, or omit it for free continuous drag.
+Use `ContinuousPicker` for floating-point values within a range. It is generic over any `BinaryFloatingPoint` type — `Double`, `Float`, `CGFloat`, `Float16` — inferred from the value binding. Provide a `step` for snapping, or omit it for free continuous drag.
 
 ```swift
 import SwiftPickerKit

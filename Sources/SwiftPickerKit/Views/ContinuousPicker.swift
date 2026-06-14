@@ -7,7 +7,10 @@
 
 import SwiftUI
 
-/// A picker that selects a `Double` value within a continuous range.
+/// A picker that selects a floating-point value within a continuous range.
+///
+/// `Value` may be any `BinaryFloatingPoint` type — `Double`, `Float`,
+/// `CGFloat`, and so on. The concrete type is inferred from the `value` binding.
 ///
 /// When a `step` is provided, the picker snaps to discrete tick marks spaced by
 /// that step value. Without a step, the ruler scrolls freely and the value updates
@@ -20,27 +23,27 @@ import SwiftUI
 /// // Step-less — value updates continuously as the user drags
 /// ContinuousPicker(value: $position, in: 0.0...1.0)
 /// ```
-public struct ContinuousPicker: View {
-    @Binding private var value: Double
+public struct ContinuousPicker<Value: BinaryFloatingPoint>: View {
+    @Binding private var value: Value
 
-    private let range: ClosedRange<Double>
-    private let step: Double?
+    private let range: ClosedRange<Value>
+    private let step: Value?
 
     /// Creates a continuous picker.
-    /// - Parameter value: A binding to the selected `Double` value. Values outside `range` are clamped.
+    /// - Parameter value: A binding to the selected value. Values outside `range` are clamped.
     /// - Parameter range: The valid range of values.
     /// - Parameter step: The distance between snappable values. Pass `nil` (default) for free continuous drag.
-    public init(value: Binding<Double>, in range: ClosedRange<Double>, step: Double? = nil) {
+    public init(value: Binding<Value>, in range: ClosedRange<Value>, step: Value? = nil) {
         self._value = value
         self.range = range
         self.step = step
     }
 
-    private var steppedValues: [Double] {
+    private var steppedValues: [Value] {
         guard let step = self.step, step > 0.0 else { return [] }
         let lower = self.range.lowerBound
         let upper = self.range.upperBound
-        var result: [Double] = []
+        var result: [Value] = []
         var current = lower
         while current < upper - step * 0.0001 {
             result.append(current)
@@ -50,7 +53,7 @@ public struct ContinuousPicker: View {
         return result
     }
 
-    private func nearestSteppedValue(to target: Double) -> Double {
+    private func nearestSteppedValue(to target: Value) -> Value {
         return self.steppedValues.min(by: { abs($0 - target) < abs($1 - target) }) ?? target
     }
 
@@ -59,9 +62,9 @@ public struct ContinuousPicker: View {
 
         if self.step != nil {
             // Stepped: snaps to discrete tick values
-            let snappedValue = Binding<Double>(
+            let snappedValue = Binding<Value>(
                 get: {
-                    return self.nearestSteppedValue(to: clamped)
+                    self.nearestSteppedValue(to: clamped)
                 },
                 set: {
                     self.value = $0
@@ -70,9 +73,9 @@ public struct ContinuousPicker: View {
             TickMarkRulerRenderer(selection: snappedValue, values: self.steppedValues)
         } else {
             // Step-less: free continuous drag, no snapping
-            let continuousValue = Binding<Double>(
+            let continuousValue = Binding<Value>(
                 get: {
-                    return clamped
+                    clamped
                 },
                 set: {
                     self.value = $0
