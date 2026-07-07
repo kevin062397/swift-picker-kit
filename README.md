@@ -16,6 +16,65 @@ A SwiftUI component library providing precise, customizable picker controls for 
 - **Ruler tick appearance** — configurable colors, line widths, and minor tick length for both tick marks and the center indicator
 - **Transparent backgrounds** — no imposed chrome; integrators own the background
 
+## Screenshots
+
+<table>
+    <tr>
+        <td align="center" width="50%">
+            <img
+                src="Assets/Screenshots/item-picker-scroll-wheel-horizontal.png"
+                alt="ItemPicker with the scroll wheel display style in horizontal orientation"
+                width="100%"
+            /><br />
+            <sub><code>ItemPicker</code> · scroll wheel · horizontal</sub>
+        </td>
+        <td align="center" width="50%">
+            <img
+                src="Assets/Screenshots/item-picker-scroll-wheel-vertical.png"
+                alt="ItemPicker with the scroll wheel display style in vertical orientation"
+                width="100%"
+            /><br />
+            <sub><code>ItemPicker</code> · scroll wheel · vertical</sub>
+        </td>
+    </tr>
+    <tr>
+        <td align="center" width="50%">
+            <img
+                src="Assets/Screenshots/item-picker-tick-mark-ruler-with-labels-horizontal.png"
+                alt="ItemPicker with the tick-mark ruler display style and labels in horizontal orientation"
+                width="100%"
+            /><br />
+            <sub><code>ItemPicker</code> · tick-mark ruler · horizontal · with labels</sub>
+        </td>
+        <td align="center" width="50%">
+            <img
+                src="Assets/Screenshots/item-picker-tick-mark-ruler-with-labels-vertical.png"
+                alt="ItemPicker with the tick-mark ruler display style and labels in vertical orientation"
+                width="100%"
+            /><br />
+            <sub><code>ItemPicker</code> · tick-mark ruler · vertical · with labels</sub>
+        </td>
+    </tr>
+    <tr>
+        <td align="center" width="50%">
+            <img
+                src="Assets/Screenshots/continuous-picker-with-labels-horizontal.png"
+                alt="ContinuousPicker with labels in horizontal orientation"
+                width="100%"
+            /><br />
+            <sub><code>ContinuousPicker</code> · horizontal · with labels</sub>
+        </td>
+        <td align="center" width="50%">
+            <img
+                src="Assets/Screenshots/continuous-picker-with-labels-vertical.png"
+                alt="ContinuousPicker with labels in vertical orientation"
+                width="100%"
+            /><br />
+            <sub><code>ContinuousPicker</code> · vertical · with labels</sub>
+        </td>
+    </tr>
+</table>
+
 ## Requirements
 
 - **Deployment target**: iOS 17.0+ (the minimum iOS version that can run the library)
