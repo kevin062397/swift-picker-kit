@@ -31,7 +31,9 @@ struct RulerTickMark: View {
                     .frame(width: lineWidth, height: tickLength)
             }
         } else {
-            ZStack(alignment: self.alignment == .trailing ? .trailing : (self.alignment == .leading ? .leading : .center)) {
+            ZStack(
+                alignment: self.alignment == .trailing ? .trailing : (self.alignment == .leading ? .leading : .center)
+            ) {
                 Color.clear.frame(width: self.crossAxisSize, height: lineWidth)
                 Rectangle()
                     .fill(color)

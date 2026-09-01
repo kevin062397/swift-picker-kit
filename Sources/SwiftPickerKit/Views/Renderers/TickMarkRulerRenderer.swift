@@ -144,15 +144,20 @@ struct TickMarkRulerRenderer<Value: Hashable>: View {
         let center = viewSize / 2.0
         let plateau = self.fadePlateau.clamped(0.0, 1.0) * center
         let minOpacity = self.fadeMinOpacity.clamped(0.0, 1.0)
-        return (0..<self.tickCount).map { index in
-            let tickCenter = dragOffset + CGFloat(index) * self.tickSpacing
-            let distance = abs(tickCenter - center)
-            guard distance > plateau else { return 1.0 }
-            let fadeDistance = center - plateau
-            guard fadeDistance > 0.0 else { return 1.0 }
-            let normalizedDistance = (distance - plateau) / fadeDistance
-            return max(minOpacity, 1.0 - Double(normalizedDistance * self.fadeStrength))
-        }
+        return (0..<self.tickCount)
+            .map { index in
+                let tickCenter = dragOffset + CGFloat(index) * self.tickSpacing
+                let distance = abs(tickCenter - center)
+                guard distance > plateau else {
+                    return 1.0
+                }
+                let fadeDistance = center - plateau
+                guard fadeDistance > 0.0 else {
+                    return 1.0
+                }
+                let normalizedDistance = (distance - plateau) / fadeDistance
+                return max(minOpacity, 1.0 - Double(normalizedDistance * self.fadeStrength))
+            }
     }
 
     @ViewBuilder
@@ -161,7 +166,12 @@ struct TickMarkRulerRenderer<Value: Hashable>: View {
             customStyle.makeBody(
                 configuration: PickerTickMarkRulerStyleConfiguration(
                     scale: AnyView(self.tickScale(proxy: proxy, opacities: opacities)),
-                    indicator: AnyView(RulerCenterIndicator(crossAxisSize: self.orientation == .horizontal ? proxy.size.height : proxy.size.width, orientation: self.orientation)),
+                    indicator: AnyView(
+                        RulerCenterIndicator(
+                            crossAxisSize: self.orientation == .horizontal ? proxy.size.height : proxy.size.width,
+                            orientation: self.orientation
+                        )
+                    ),
                     currentValue: Double(self.selectedIndex),
                     range: 0.0...Double(self.tickCount - 1)
                 )

@@ -33,6 +33,8 @@ public struct PickerTickMarkRulerStyleConfiguration {
 /// Apply a custom style with `.pickerTickMarkRulerStyle(_:)`.
 public protocol PickerTickMarkRulerStyle {
     associatedtype Body: View
+
     /// Creates the view representing the ruler, composed from the given scale and indicator.
-    @ViewBuilder func makeBody(configuration: PickerTickMarkRulerStyleConfiguration) -> Body
+    @ViewBuilder
+    func makeBody(configuration: PickerTickMarkRulerStyleConfiguration) -> Body
 }

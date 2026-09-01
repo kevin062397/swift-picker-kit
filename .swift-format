@@ -1,0 +1,88 @@
+{
+    "fileScopedDeclarationPrivacy": {
+        "accessLevel": "private"
+    },
+    "indentBlankLines": false,
+    "indentConditionalCompilationBlocks": true,
+    "indentSwitchCaseLabels": false,
+    "indentation": {
+        "spaces": 4
+    },
+    "lineBreakAroundMultilineExpressionChainComponents": true,
+    "lineBreakBeforeControlFlowKeywords": false,
+    "lineBreakBeforeEachArgument": true,
+    "lineBreakBeforeEachGenericRequirement": true,
+    "lineBreakBetweenDeclarationAttributes": false,
+    "lineLength": 120,
+    "maximumBlankLines": 1,
+    "multiElementCollectionTrailingCommas": true,
+    "multilineTrailingCommaBehavior": "keptAsWritten",
+    "noAssignmentInExpressions": {
+        "allowedFunctions": [
+            "XCTAssertNoThrow"
+        ]
+    },
+    "orderedImports": {
+        "includeConditionalImports": true,
+        "shouldGroupImports": true
+    },
+    "prioritizeKeepingFunctionOutputTogether": true,
+    "reflowMultilineStringLiterals": "never",
+    "respectsExistingLineBreaks": true,
+    "rules": {
+        "AllPublicDeclarationsHaveDocumentation": true,
+        "AlwaysUseLiteralForEmptyCollectionInit": true,
+        "AlwaysUseLowerCamelCase": true,
+        "AmbiguousTrailingClosureOverload": true,
+        "AvoidRetroactiveConformances": true,
+        "BeginDocumentationCommentWithOneLineSummary": false,
+        "DoNotUseSemicolons": true,
+        "DontRepeatTypeInStaticProperties": true,
+        "FileScopedDeclarationPrivacy": true,
+        "FullyIndirectEnum": true,
+        "GroupNumericLiterals": true,
+        "IdentifiersMustBeASCII": true,
+        "NeverForceUnwrap": false,
+        "NeverUseForceTry": false,
+        "NeverUseImplicitlyUnwrappedOptionals": false,
+        "NoAccessLevelOnExtensionDeclaration": true,
+        "NoAssignmentInExpressions": true,
+        "NoBlockComments": true,
+        "NoCasesWithOnlyFallthrough": true,
+        "NoEmptyLinesOpeningClosingBraces": true,
+        "NoEmptyTrailingClosureParentheses": true,
+        "NoLabelsInCasePatterns": true,
+        "NoLeadingUnderscores": true,
+        "NoParensAroundConditions": true,
+        "NoPlaygroundLiterals": true,
+        "NoVoidReturnOnFunctionSignature": true,
+        "OmitExplicitReturns": false,
+        "OneCasePerLine": true,
+        "OneVariableDeclarationPerLine": true,
+        "OnlyOneTrailingClosureArgument": true,
+        "OrderedImports": true,
+        "ReplaceForEachWithForLoop": false,
+        "ReturnVoidInsteadOfEmptyTuple": true,
+        "SwiftTestingNamingConventions": true,
+        "TypeNamesShouldBeCapitalized": true,
+        "UseEarlyExits": false,
+        "UseExplicitNilCheckInConditions": true,
+        "UseLetInEveryBoundCaseVariable": true,
+        "UseShorthandTypeNames": true,
+        "UseSingleLinePropertyGetter": true,
+        "UseSynthesizedInitializer": true,
+        "UseTripleSlashForDocumentationComments": true,
+        "UseWhereClausesInForLoops": false,
+        "ValidateDocumentationComments": true
+    },
+    "spacesAroundRangeFormationOperators": false,
+    "spacesBeforeEndOfLineComments": 2,
+    "swiftTestingNamingConventions": {
+        "forbidSuiteDescription": false,
+        "forbidSuiteWithoutParameters": true,
+        "forbidTestDescription": false,
+        "requireRawIdentifierTestNames": false
+    },
+    "tabWidth": 4,
+    "version": 1
+}

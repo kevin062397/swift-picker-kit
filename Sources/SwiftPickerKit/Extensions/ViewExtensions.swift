@@ -71,8 +71,17 @@ extension View {
     ///   (below ticks in horizontal orientation, trailing in vertical).
     /// - Parameter label: A view builder receiving the tick index. Map the index to a display value
     ///   as needed (e.g. `Text("\(values[index])")`).
-    public func pickerRulerLabels<Label: View>(placement: PickerRulerLabelPlacement = .after, @ViewBuilder label: @escaping (Int) -> Label) -> some View {
-        self.environment(\.pickerRulerLabelPlacement, placement).environment(\.pickerRulerLabelContent, PickerRulerLabelContent(makeLabel: { AnyView(label($0)) }))
+    public func pickerRulerLabels<Label: View>(
+        placement: PickerRulerLabelPlacement = .after,
+        @ViewBuilder label: @escaping (Int) -> Label
+    ) -> some View {
+        self.environment(\.pickerRulerLabelPlacement, placement)
+            .environment(
+                \.pickerRulerLabelContent,
+                PickerRulerLabelContent(makeLabel: {
+                    AnyView(label($0))
+                })
+            )
     }
 
     /// Sets the minimum opacity applied to tick marks and labels at the edges of the view.

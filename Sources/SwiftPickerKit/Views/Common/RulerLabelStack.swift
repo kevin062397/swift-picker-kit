@@ -20,7 +20,8 @@ struct RulerLabelStack: View {
 
     var body: some View {
         let gap: CGFloat = 5.0
-        let crossOffset: CGFloat = self.labelPlacement == .after ? self.crossAxisSize + gap : -(self.crossAxisSize + gap)
+        let crossOffset: CGFloat =
+            self.labelPlacement == .after ? self.crossAxisSize + gap : -(self.crossAxisSize + gap)
 
         if self.orientation == .horizontal {
             HStack(spacing: self.tickSpacing - 1.0) {

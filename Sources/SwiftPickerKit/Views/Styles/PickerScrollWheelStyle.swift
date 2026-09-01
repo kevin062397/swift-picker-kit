@@ -40,6 +40,8 @@ public struct PickerScrollWheelStyleConfiguration {
 /// Apply a custom style with `.pickerScrollWheelStyle(_:)`.
 public protocol PickerScrollWheelStyle {
     associatedtype Body: View
+
     /// Creates the view representing a single scroll wheel item.
-    @ViewBuilder func makeBody(configuration: PickerScrollWheelStyleConfiguration) -> Body
+    @ViewBuilder
+    func makeBody(configuration: PickerScrollWheelStyleConfiguration) -> Body
 }
